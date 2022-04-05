@@ -1,23 +1,15 @@
-import os
-
 from dash import Dash, Input, Output, dcc, html
+import dash_bootstrap_components as dbc
 
-app = Dash(__name__)
+external_stylesheets = [dbc.themes.LUX]
+
+app = Dash(__name__, external_stylesheets=external_stylesheets)
 
 server = app.server
 
-app.layout = html.Div(
-    [
-        html.H2("Hello World"),
-        dcc.Dropdown(["LA", "NYC", "MTL"], "LA", id="dropdown"),
-        html.Div(id="display_value"),
-    ]
-)
-
-
-@app.callback(Output("display_value", "children"), [Input("dropdown", "value")])
-def display_value(value):
-    return f"You have selected {value}"
+app.layout = html.Div([
+   html.Header("Test")
+], style={"display": "flex", "justify-content": "center"})
 
 
 if __name__ == "__main__":

@@ -1,11 +1,27 @@
 import dash_bootstrap_components as dbc
 from dash import Dash, Input, Output, dcc, html
+import plotly.express as px
 
 external_stylesheets = [dbc.themes.LUX]
 
 app = Dash(__name__, external_stylesheets=external_stylesheets)
 
 server = app.server
+
+fig = px.scatter_mapbox(df_locations,
+                     lat="latitude_sensor",
+                     lon="longitude_sensor",
+                     hover_data={'latitude_sensor': False,
+                                 "longitude_sensor": False,
+                                 "count": ":100.0f"},
+                     color_discrete_sequence=["darkgreen"],
+                     size="count",
+                     size_max=20,
+                     zoom=13)
+fig.update_layout(mapbox_style="open-street-map")
+fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
+
+fig.show()
 
 app.layout = html.Div([
     html.Header([

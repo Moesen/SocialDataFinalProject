@@ -1,2 +1,2 @@
-pip install dvc
-pip install 'dvc[gdrive]'
+dvc
+dvc[gdrive]

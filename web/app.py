@@ -2,6 +2,9 @@ import dash_bootstrap_components as dbc
 import pandas as pd
 import plotly.express as px
 from dash import Dash, Input, Output, dcc, html
+import os
+
+img_dir = os.getcwd() + "/img/"
 
 # Setup of app
 external_stylesheets = [dbc.themes.LUX]
@@ -32,8 +35,12 @@ fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
 
 app.layout = html.Div(
     [
-        html.Header(
-            [html.H1("Pedestrians in Melbourne AU")], style={"margin-top": "1.5rem"}
+        html.Header([
+            html.Div([
+                html.Img(src=app.get_asset_url("melborn_icon.png"), style={"width": "3rem"}),
+                html.H1("Pedestrians in Melbourne AU", style={"margin": "0", "padding": "0"})
+            ], style={"display": "flex", "alignItems": "flex-end", "justifyContent": "space-around"})
+            ], style={"marginTop": "1.5rem", "width": "100%"}
         ),
         dcc.Markdown(
             [
@@ -55,9 +62,9 @@ app.layout = html.Div(
     ],
     style={
         "display": "flex",
-        "align-items": "center",
-        "flex-direction": "column",
-        "max-width": "45vw",
+        "alignItems": "center",
+        "flexDirection": "column",
+        "maxWidth": "45vw",
         "margin": "0 auto",
     },
 )

@@ -1,0 +1,30 @@
+/* --------- TITLE TEXT --------- */
+header h1 {
+    margin: 0;
+    padding: 0;
+}
+
+/* --------- IMAGE --------- */
+.melbourne_icon {
+    width: 3rem;
+}
+
+/* --------- CONTAINER --------- */
+.header__container {
+    display: flex; 
+    align-items: flex-end;
+    justify-content: flex-start;
+    padding-left: 15 px;
+}
+
+header {
+    margin-top: 1.5rem;
+    width: 100%;
+}
+
+/* --------- NOTEBOOK BUTTON --------- */
+.notebook_button {
+    color: red;
+    background: none;
+    border-radius: 3rem;
+}

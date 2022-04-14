@@ -5,7 +5,6 @@ import pandas as pd
 import plotly.express as px
 from dash import Dash, Input, Output, dcc, html
 
-img_dir = os.getcwd() + "/img/"
 
 # Setup of app
 external_stylesheets = [dbc.themes.LUX]

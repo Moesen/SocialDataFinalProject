@@ -6,12 +6,6 @@
     margin: 0 auto;
 }
 
-/* --------- SENSOR LOCATION GRAPHS --------- */
-#sensor-location-graphs__container {
-    display: flex;
+.section__container {
     width: 100%;
-    box-sizing: border-box;
-    overflow: hidden;
-    align-items: center;
-    justify-content: center;
 }

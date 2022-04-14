@@ -5,7 +5,6 @@ import pandas as pd
 import plotly.express as px
 from dash import Dash, Input, Output, dcc, html
 
-
 # Setup of app
 external_stylesheets = [dbc.themes.LUX]
 app = Dash(__name__, external_stylesheets=external_stylesheets)
@@ -25,7 +24,7 @@ fig = px.scatter_mapbox(
         "latitude_sensor": False,
         "longitude_sensor": False,
         "count": ":100.0f",
-        "site_id": True
+        "site_id": True,
     },
     color_discrete_sequence=["darkgreen"],
     size="count",
@@ -47,7 +46,7 @@ app.layout = html.Div(
                             className="melbourne_icon",
                         ),
                         html.H1("Pedestrians in Melbourne AU"),
-                        html.Button("Notebook", className="notebook_button")
+                        html.Button("Notebook", className="notebook_button"),
                     ],
                     className="header__container",
                 )
@@ -75,10 +74,16 @@ app.layout = html.Div(
                 This is a map of the different pedestrian sensors, and the activity they have tracked throughout the period
             """
         ),
-        html.Div([
-            dcc.Graph(figure=fig, id="sensor-map", hoverData={"points": [{"customdata": [1001]}]}),
-            dcc.Graph(id="timeseries-sensor-activity")
-        ], id="sensor-location-graphs__container"
+        html.Div(
+            [
+                dcc.Graph(
+                    figure=fig,
+                    id="sensor-map",
+                    hoverData={"points": [{"customdata": [1001]}]},
+                ),
+                dcc.Graph(id="timeseries-sensor-activity"),
+            ],
+            id="sensor-location-graphs__container",
         ),
         dcc.Markdown(
             """
@@ -102,18 +107,28 @@ app.layout = html.Div(
     className="content__container",
 )
 
+
 @app.callback(
-    Output("timeseries-sensor-activity", "figure"),
-    Input("sensor-map", "hoverData")
+    Output("timeseries-sensor-activity", "figure"), Input("sensor-map", "hoverData")
 )
 def update_sensor_activity_timeseries(hoverData):
-    site_id = hoverData['points'][0]['customdata'][-1]
+    site_id = hoverData["points"][0]["customdata"][-1]
     site_df = df_sens_activity[df_sens_activity.site_id == site_id]
-    
+
     fig = px.scatter(site_df, x="month_name", y="count")
     fig.update_traces(mode="lines+markers")
     fig.update_yaxes(showgrid=False)
-    fig.add_annotation(x=.80, y=.90, xanchor="left", yanchor="bottom", xref="paper", yref="paper", showarrow=False, align="right", text=f"Site ID: {site_id}")
+    fig.add_annotation(
+        x=0.80,
+        y=0.90,
+        xanchor="left",
+        yanchor="bottom",
+        xref="paper",
+        yref="paper",
+        showarrow=False,
+        align="right",
+        text=f"Site ID: {site_id}",
+    )
     fig.update_yaxes(range=[0, site_df["count"].max()])
     return fig
 

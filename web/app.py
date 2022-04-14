@@ -23,6 +23,7 @@ app.layout = html.Div(
                             """
                             # Energy Consumption and 
                             # Social/Economic Development
+                            ##### by Kelvin Foster, Nicolai Weisbjerg and Gustav Lang Moesmand
                             """
                         ),
                     ],

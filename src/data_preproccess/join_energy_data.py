@@ -21,8 +21,8 @@ if __name__ == "__main__":
     in_path, out_path = args.input_path, args.output_path
     energy_data = [x for x in os.listdir(os.path.join(in_path, "EnergyData"))]
 
-    *ac_paths, _ = filter(lambda x: "ac" in x.lower(), energy_data)
-    *pcc_paths, _ = filter(lambda x: "pcc" in x.lower(), energy_data)
+    ac_paths = list(filter(lambda x: "ac" in x.lower(), energy_data))
+    pcc_paths = list(filter(lambda x: "pcc" in x.lower(), energy_data))
 
     print(f"Merging ac_dfs ({len(ac_paths)})")
     ac_dfs = [

@@ -1,5 +1,3 @@
-import os
-
 import dash_bootstrap_components as dbc
 import pandas as pd
 import plotly.express as px
@@ -11,6 +9,28 @@ app = Dash(__name__, external_stylesheets=external_stylesheets)
 # This variable is what Procfile points to with gunicorn:
 #   web: ... app:server
 server = app.server
+
+# Reading locations and counts for locations of sensors
+df_sens_locations = pd.read_csv("data/locations.csv")
+df_sens_activity = pd.read_csv("data/monthly_sensor_data.csv")
+
+fig = px.scatter_mapbox(
+    df_sens_locations,
+    lat="latitude_sensor",
+    lon="longitude_sensor",
+    hover_data={
+        "latitude_sensor": False,
+        "longitude_sensor": False,
+        "count": ":100.0f",
+        "site_id": True,
+    },
+    color_discrete_sequence=["darkgreen"],
+    size="count",
+    size_max=20,
+    zoom=13,
+)
+fig.update_layout(mapbox_style="open-street-map")
+fig.update_layout(margin={"r": 0, "t": 10, "l": 10, "b": 0}, width=500, height=500)
 
 app.layout = html.Div(
     [
@@ -26,6 +46,8 @@ app.layout = html.Div(
                             ##### by Kelvin Foster, Nicolai Weisbjerg and Gustav Lang Moesmand
                             """
                         ),
+                        html.H1("Pedestrians in Melbourne AU"),
+                        html.Button("Notebook", className="notebook_button"),
                     ],
                     className="header__container",
                 )
@@ -56,8 +78,18 @@ app.layout = html.Div(
                 ----------
                 #### **Sensor locations**
                 This is a map of the different pedestrian sensors, and the activity they have tracked throughout the period
-            """,
-            className="section__container",
+            """
+        ),
+        html.Div(
+            [
+                dcc.Graph(
+                    figure=fig,
+                    id="sensor-map",
+                    hoverData={"points": [{"customdata": [1001]}]},
+                ),
+                dcc.Graph(id="timeseries-sensor-activity"),
+            ],
+            id="sensor-location-graphs__container",
         ),
         dcc.Markdown(
             """
@@ -81,6 +113,32 @@ app.layout = html.Div(
     ],
     className="content__container",
 )
+
+
+@app.callback(
+    Output("timeseries-sensor-activity", "figure"), Input("sensor-map", "hoverData")
+)
+def update_sensor_activity_timeseries(hoverData):
+    site_id = hoverData["points"][0]["customdata"][-1]
+    site_df = df_sens_activity[df_sens_activity.site_id == site_id]
+
+    fig = px.scatter(site_df, x="month_name", y="count")
+    fig.update_traces(mode="lines+markers")
+    fig.update_yaxes(showgrid=False)
+    fig.add_annotation(
+        x=0.80,
+        y=0.90,
+        xanchor="left",
+        yanchor="bottom",
+        xref="paper",
+        yref="paper",
+        showarrow=False,
+        align="right",
+        text=f"Site ID: {site_id}",
+    )
+    fig.update_yaxes(range=[0, site_df["count"].max()])
+    return fig
+
 
 if __name__ == "__main__":
     app.run_server(debug=True)

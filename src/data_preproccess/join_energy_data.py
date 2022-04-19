@@ -48,6 +48,6 @@ if __name__ == "__main__":
         pcc_dfs,
     )
 
-    print(f"Saving to csv in {out_path=}")
+    print(f"Saving to csv in {out_path}")
     ac_final.to_csv(os.path.join(out_path, "ac_energy_joined.csv"))
     pcc_final.to_csv(os.path.join(out_path, "pcc_energy_joined.csv"))

@@ -198,34 +198,30 @@ def extrapolate_data(out_path: str, x_extrap: int):
         for col in cols_to_extrap:
             for i in range(1,N):
                 if(np.isnan(df.loc[i-1,col]) & (not np.isnan(df.loc[i,col])) & (df.loc[i-1,'Entity'] == df.loc[i,'Entity'])):
-                    m = 2
-                    if i-m > 0: 
-                        while(np.isnan(df.loc[i-m,col]) & (df.loc[i-m,'Entity'] == df.loc[i,'Entity']) & (m<x_extrap)): # Go back a max of x_extrap years
+                    m = 1
+                    if i-m-1 >= 0: 
+                        while(np.isnan(df.loc[i-m-1,col]) & (df.loc[i-m-1,'Entity'] == df.loc[i,'Entity']) & (m+1<=x_extrap)): # Go back a max of x_extrap years
+                            m = m + 1
                             if i-m == 0:
                                 break;
-                            else:
-                                m = m+1
-                    else:
-                        m = 1
 
                     df.loc[i-m:i-1,col] = np.repeat(df.loc[i,col],m)
                     df_extrap_mask.loc[i-m:i-1,col] = np.repeat(2,m)
                 
-                elif(i < N-1):
-                    if(np.isnan(df.loc[i+1,col]) & (not np.isnan(df.loc[i,col])) & (df.loc[i+1,'Entity'] == df.loc[i,'Entity'])):
-                        m = 2
-                        if i+m < N-1:
-                            while(np.isnan(df.loc[i+m,col]) & (df.loc[i+m,'Entity'] == df.loc[i,'Entity']) & (m<x_extrap)): # Go forward a max of x_extrap years
-                                if i+m == N-1:
-                                    break;
-                                else:
-                                    m = m+1
-                        else:
-                            m = 1
-
-                        df.loc[i+1:i+m,col] = np.repeat(df.loc[i,col],m)
-                        df_extrap_mask.loc[i+1:i+m,col] = np.repeat(2,m)
-                        i = i + m
+            i = 0
+            while (i < N-1):
+                if(np.isnan(df.loc[i+1,col]) & (not np.isnan(df.loc[i,col])) & (df.loc[i+1,'Entity'] == df.loc[i,'Entity'])):
+                    m = 1
+                    if i+m+1 <= N-1:
+                        while(np.isnan(df.loc[i+m+1,col]) & (df.loc[i+m+1,'Entity'] == df.loc[i,'Entity']) & (m+1<=x_extrap)): # Go forward a max of x_extrap years
+                            m = m + 1
+                            if i+m == N-1:
+                                break;
+                    df.loc[i+1:i+m,col] = np.repeat(df.loc[i,col],m)
+                    df_extrap_mask.loc[i+1:i+m,col] = np.repeat(2,m)
+                    i += m + 1
+                else:
+                    i += 1
     
     print(f"Saving to csv in {out_path + '/socio_extrapolated_' + str(x_extrap) + '.csv'}")
     print(f"Saving to csv in {out_path + '/socio_extrapolated_mask_' + str(x_extrap) + '.csv'}")
@@ -249,24 +245,25 @@ def split_data_country_area(out_path: str, x_extrap):
     countries.replace({'&':'and'},inplace=True, regex=True)
     countries.replace({'Congo - Brazzaville':'Congo'},inplace=True, regex=True)
     countries.replace({'Congo - Kinshasa':'Democratic Republic of Congo'},inplace=True, regex=True)
-    countries.replace({"Côte d'Ivoire":"Cote d'Ivoire"},inplace=True, regex=True)
+    countries.replace({"Côte":"Cote"},inplace=True, regex=True)
     countries.replace({"Curaçao":"Curacao"},inplace=True, regex=True)
     countries.replace({"Czechoslovakia":"Czechia"},inplace=True, regex=True)
     countries.replace({"Faroe Islands":"Faeroe Islands"},inplace=True, regex=True)
     countries.replace({"Hong Kong SAR China":"Hong Kong"},inplace=True, regex=True)
-    countries.replace({"Korea":"South Korea"},inplace=True, regex=True)
-    countries.replace({"Micronesia (country)":"Micronesia"},inplace=True, regex=True)
+    #countries.replace({"Micronesia":"Micronesia (country)"},inplace=True, regex=True)
     countries.replace({"Macao SAR China":"Macao"},inplace=True, regex=True)
-    countries.replace({"Myanmar (Burma)":"Myanmar"},inplace=True, regex=True)
+    countries.replace({"Myanmar \(Burma\)":"Myanmar"},inplace=True, regex=True)
     countries.replace({"Palestinian Territories":"Palestine"},inplace=True, regex=True)
-    countries.replace({"São Tomé & Príncipe":"São Tomé & Príncipe"},inplace=True, regex=True)
-    countries.replace({"St.":"Saint"},inplace=True, regex=True)
+    countries.replace({"São Tomé and Príncipe":"Sao Tome and Principe"},inplace=True, regex=True)
+    countries.replace({"St\.":"Saint"},inplace=True, regex=True)
+    countries.replace({"Saint Vincent and Grenadines":"Saint Vincent and the Grenadines"},inplace=True, regex=True)
+    countries.replace({"Saint Martin":"Saint Martin (French part)"},inplace=True, regex=True)
     countries.replace({"Timor-Leste":"Timor"},inplace=True, regex=True)
-    countries.replace({"U.S. Virgin Islands":"United States Virgin Islands"},inplace=True, regex=True)
+    countries.replace({"Saint Barthélemy":"Saint Barthelemy"},inplace=True, regex=True)
+    countries.replace({"U\.S\. Virgin Islands":"United States Virgin Islands"},inplace=True, regex=True)
     countries.replace({"Vatican City":"Vatican"},inplace=True, regex=True)
-    countries.replace({"Wallis and Futuna":"Wallis and Futuna Islands"},inplace=True, regex=True)
-    countries.replace({"Wallis and Futuna":"Wallis and Futuna Islands"},inplace=True, regex=True)
-
+    #countries.replace({"Wallis and Futuna":"Wallis and Futuna Islands"},inplace=True, regex=True)
+    
     idx_country = []
     for ent in entities:
         if any(ent == country for country in countries):

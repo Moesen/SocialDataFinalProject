@@ -9,3 +9,17 @@
 .section__container {
     width: 100%;
 }
+
+#worldmap__section {
+    border: 1px solid black;
+}
+
+#world_energy_type_selection {
+    width: 20%;
+}
+
+#worldmap_graph__section {
+    display: flex;
+    box-sizing: border-box;
+    overflow: hidden;
+}

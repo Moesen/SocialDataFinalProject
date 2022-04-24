@@ -1,6 +1,7 @@
-import pycountry
-import pandas as pd
 import numpy as np
+import pandas as pd
+import pycountry
+
 
 def _do_fuzzy_search(country_name: str) -> str:
     try:
@@ -8,6 +9,7 @@ def _do_fuzzy_search(country_name: str) -> str:
     except Exception:
         result = np.nan
     return result
+
 
 def add_isocountry_column(df: pd.DataFrame, col: str) -> pd.DataFrame:
     """Generates country iso codes from column in dataframe

@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from dash import Dash, Input, Output, dcc, html
+from matplotlib.pyplot import colorbar
 
 # Setup of app
 external_stylesheets = [dbc.themes.LUX]
@@ -13,12 +14,6 @@ server = app.server
 
 # Reading locations and counts for locations of sensors
 world_df = pd.read_csv("data/pcc_energy_joined_country_codes.csv")
-print(world_df.head())
-# Worldmap Figure
-worldmap = go.Figure(go.Scattergeo(fillcolor="green"))
-worldmap.update_geos(projection_type="natural earth", resolution=110, showcountries=True, countrywidth=2)
-worldmap.update_layout(height=400, margin={"r": 0, "t": 0, "l": 0, "b": 0})
-
 
 app.layout = html.Div(
     [
@@ -52,9 +47,28 @@ app.layout = html.Div(
         # --------  -------- #
         html.Div(
             [
-                dcc.Graph(figure=worldmap)
+                dcc.Dropdown(
+                    sorted(['Coal per capita (kWh)',
+                    'Fossil Fuels per capita (kWh)', 
+                    'Energy per capita (kWh)',
+                    'Low-carbon energy per capita (kWh)', 
+                    'Gas per capita (kWh)',
+                    'Nuclear per capita (kWh)', 
+                    'Oil per capita (kWh)',
+                    'Renewables per capita (kWh)', 
+                    'Wind per capita (kWh)',
+                    'Solar per capita (kWh)', 
+                    'Hydro per capita (kWh)']),
+                    "Coal per capita (kWh)",
+                    id="world_energy_type_selection"
+                ),
+                html.Div([
+                    dcc.Loading(dcc.Graph(id="world_map_energy_animation"), type="graph"),
+                    dcc.Loading(dcc.Graph(id="world_bar_energy_animation"), type="graph")
+                ], id="worldmap_graph__section")
             ],
-            className="section__container"
+            className="section__container",
+            id="worldmap__section"
         ),
         dcc.Markdown(
             """
@@ -78,6 +92,32 @@ app.layout = html.Div(
     ],
     className="content__container",
 )
+
+
+@app.callback(
+    Output("world_map_energy_animation", "figure"),
+    Input("world_energy_type_selection", "value")
+    )
+def display_animated_worldmap(energy_type):
+    df = world_df
+    # Worldmap Figure
+    world_animation = px.choropleth(
+        df,
+        locations="country_code",
+        color=energy_type,
+        animation_frame="Year",
+        hover_name="Entity",
+        color_continuous_scale=["#aaa", "green"],
+        range_color=[df[energy_type].min(), df[energy_type].max()]
+    )
+
+    world_animation.update_layout(
+        margin={"t": 0, "l": 0, "r": 0, "b": 0},
+        coloraxis_showscale=False,  # Removes colorbar
+    )
+
+    return world_animation
+
 
 if __name__ == "__main__":
     app.run_server(debug=True)

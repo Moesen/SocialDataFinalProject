@@ -10,3 +10,6 @@
 - [ ] Machine learning with sklearn - predict some stuff [link1](https://github.com/suneman/socialdata2022/blob/main/lectures/Week5.ipynb),[link2](https://github.com/suneman/socialdata2022/blob/main/lectures/Week6.ipynb)
 - [ ] Fairness and bias in machine learning [link](https://github.com/suneman/socialdata2022/blob/main/lectures/Week7.ipynb)
 - [ ] Narrative website [link](https://github.com/suneman/socialdata2022/blob/main/lectures/Week8.ipynb)
+
+## **Website**
+[Link to website hosted on heroku](https://social-data-project.herokuapp.com)

@@ -310,35 +310,50 @@ def split_data_country_area(out_path: str, processed_path: str, x_extrap, df_nam
         .drop(columns="index")
     )
 
+    # Add continent info and remove countries with no continent info
+    countries_code = pd.Series(np.array(countries_for_language('en'))[:,0],dtype="string")
+    df_country['Continent'] = np.nan
+    for indx, ent in enumerate(df_country['Entity']):
+        try:
+            cont = pc.convert_continent_code_to_continent_name(
+            pc.country_alpha2_to_continent_code(countries_code.iloc[list(countries).index(ent)]))
+            df_country.loc[indx,'Continent'] = cont
+        except:
+            continue;
+
+    cols = df_country.columns[[0,-1]+list(np.arange(1,len(df_country.columns)-1,1))]
+    df_country = df_country[cols]
+    df_country = df_country[df_country['Continent'].notna()]
+
     print(
-        f"Saving to csv in {out_path + f'/{df_name}_extrapolated_' + str(x_extrap) + '_country.csv'}"
+        f"Saving to csv in {processed_path + f'/{df_name}_extrapolated_' + str(x_extrap) + '_country.csv'}"
     )
     print(
-        f"Saving to csv in {out_path + f'/{df_name}_extrapolated_mask_' + str(x_extrap) + '_country.csv'}"
+        f"Saving to csv in {processed_path + f'/{df_name}_extrapolated_mask_' + str(x_extrap) + '_country.csv'}"
     )
     print(
-        f"Saving to csv in {out_path + f'/{df_name}_extrapolated_' + str(x_extrap) + '_area.csv'}"
+        f"Saving to csv in {processed_path + f'/{df_name}_extrapolated_' + str(x_extrap) + '_area.csv'}"
     )
     print(
-        f"Saving to csv in {out_path + f'/{df_name}_extrapolated_mask_' + str(x_extrap) + '_area.csv'}"
+        f"Saving to csv in {processed_path + f'/{df_name}_extrapolated_mask_' + str(x_extrap) + '_area.csv'}"
     )
 
     df_country.to_csv(
         os.path.join(
-            out_path, f"{df_name}_extrapolated_" + str(x_extrap) + "_country.csv"
+            processed_path, f"{df_name}_extrapolated_" + str(x_extrap) + "_country.csv"
         )
     )
     df_mask_country.to_csv(
         os.path.join(
-            out_path, f"{df_name}_extrapolated_mask_" + str(x_extrap) + "_country.csv"
+            processed_path, f"{df_name}_extrapolated_mask_" + str(x_extrap) + "_country.csv"
         )
     )
     df_area.to_csv(
-        os.path.join(out_path, f"{df_name}_extrapolated_" + str(x_extrap) + "_area.csv")
+        os.path.join(processed_path, f"{df_name}_extrapolated_" + str(x_extrap) + "_area.csv")
     )
     df_mask_area.to_csv(
         os.path.join(
-            out_path, f"{df_name}_extrapolated_mask_" + str(x_extrap) + "_area.csv"
+            processed_path, f"{df_name}_extrapolated_mask_" + str(x_extrap) + "_area.csv"
         )
     )
 

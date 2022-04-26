@@ -54,7 +54,7 @@ def preprocces_data(out_path: str, df: pd.DataFrame):
         elif "military_" in col:
             cols[indx] = "Military_Spendings"
         elif "Mortality rate, under-5" in col:
-            cols[indx] = "Child_Mortality_Rate"
+            cols[indx] = "Child mortality rate (under 5 years - %)"
             df.loc[:, col] = (1.0 * df.loc[:, col]) / 1000.0
         elif "Human Dev" in col:
             cols[indx] = "HDI"
@@ -67,13 +67,21 @@ def preprocces_data(out_path: str, df: pd.DataFrame):
         elif "GDP" == col:
             cols[indx] = "GDP"
         elif "GDP per" in col:
-            cols[indx] = "GDP_Per_Capita"
+            cols[indx] = "GDP per capita ($)"
         elif "Life expec" in col:
-            cols[indx] = "Life_Expectancy"
+            cols[indx] = "Life expectancy (years)"
         elif "Entity" in col:
             cols[indx] = "Entity"
         elif "Year" in col:
             cols[indx] = "Year"
+        elif "tertiary" in col:
+            cols[indx] = "Tertiary education (%)"
+        elif "Total tax revenue" in col:
+            cols[indx] = "Tax revenue of total GDP (%)"
+        elif "Individuals using the Internet" in col:
+            cols[indx] = "Internet users (%)"
+        elif "Population" in col:
+            cols[indx] = "Population"
         else:
             cols[indx] = "to_drop"
             df.drop(columns=col, inplace=True)
@@ -88,6 +96,7 @@ def preprocces_data(out_path: str, df: pd.DataFrame):
     print(f"Removing all rows with year prior to 1965")
     df["Year"] = pd.to_numeric(df["Year"])
     df = df[df.Year >= 1965].reset_index().drop(columns="index")
+    df = df[df.Year < 2020].reset_index().drop(columns="index")
 
     print(f"Saving to csv in {out_path + '/socio_joined.csv'}")
 

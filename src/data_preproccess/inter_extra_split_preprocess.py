@@ -1,11 +1,10 @@
 import argparse
 import os
 from functools import reduce
-from country_list import countries_for_language
-import pycountry_convert as pc
 
 import numpy as np
 import pandas as pd
+import pycountry_convert as pc
 from country_list import countries_for_language
 
 
@@ -147,7 +146,7 @@ def interpolate_data(out_path: str, df_name: str):
 
     print(f"Saving to csv in {out_path + f'/{df_name}_interpolated.csv'}")
     print(f"Saving to csv in {out_path + f'/{df_name}_interpolated_mask.csv'}")
-    
+
     df.to_csv(os.path.join(out_path, f"{df_name}_interpolated.csv"))
     df_interp_mask.to_csv(os.path.join(out_path, f"{df_name}_interpolated_mask.csv"))
 
@@ -367,9 +366,13 @@ if __name__ == "__main__":
     parser.add_argument("--df_name", type=str)
     args = parser.parse_args()
 
-    in_path, out_path, processed_path, x_extrap, df_name = args.input_path, args.output_path, args.processed_path, args.x_extrap, args.df_name
+    in_path, out_path, processed_path, x_extrap, df_name = (
+        args.input_path,
+        args.output_path,
+        args.processed_path,
+        args.x_extrap,
+        args.df_name,
+    )
     interpolate_data(out_path, df_name)
     extrapolate_data(out_path, x_extrap, df_name)
     split_data_country_area(out_path, processed_path, x_extrap, df_name)
-
-

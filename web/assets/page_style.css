@@ -18,6 +18,10 @@
     width: 20%;
 }
 
+#social_data_type_selection {
+    width: 30%;
+}
+
 #worldmap_graph__section {
     display: flex;
     box-sizing: border-box;

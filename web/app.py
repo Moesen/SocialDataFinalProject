@@ -32,7 +32,7 @@ df_social_energy = df_social_energy.sort_values(['Year','Entity']).reset_index()
 df_social_energy['Fraction of Low-carbon energy per capita'] = df_social_energy['Low-carbon energy per capita (kWh)']/df_social_energy['Energy per capita (kWh)']
 col_int = ['GDP per capita ($)','Child mortality rate (under 5 years - %)','HDI','Life expectancy (years)',
            'Tertiary education (%)','Internet users (%)','Tax revenue of total GDP (%)']
-df_social_energy = df_social_energy.sort_values(['Year','Continent','Entity'])
+df_social_energy = df_social_energy.sort_values(['Year','Continent','Entity']).reset_index().drop(columns='index')
 
 ###### SKRIV BESKRIVELSE ############# SKRIV BESKRIVELSE #######
 
@@ -104,7 +104,7 @@ app.layout = html.Div(
             """
         ),
         html.Div([
-            dbc.Row([dbc.Col([html.Div("Relationship between energy types and social data", className="heading")])]),
+            dbc.Row([dbc.Col([html.Div("Choose social measure to compare with fraction of low-carbon energy use", className="heading")])]),
             dbc.Row([dbc.Col(html.Div([dcc.Dropdown(id='dropdown',
                                 options=[{'label': i, 'value': i} for i in sorted(col_int)],
                                 value="GDP per capita ($)")],
@@ -112,31 +112,14 @@ app.layout = html.Div(
                                 id="social_data_type_selection")
             )]),
             dcc.Checklist(
-                ['Continent', 'Trendline', 'Scatter'],
+                ['Scatter', 'Trendline', 'Continent'],
                 ['Continent', 'Scatter'],
                 inline=False,
-                id = "checklist_social_energy_compare"
+                id = "checklist_social_energy_compare",
+                labelStyle={'display': 'block'}
             ),
-            dcc.Tabs(id="tabs-selector",
-                        value="tab-1",
-                        className="custom-tabs-container",
-                        children=[
-                                dcc.Tab(label="ScatterPlot",
-                                        value="tab-1",
-                                        className="custom-tab",
-                                        children=[html.Div([dcc.Graph(id="graph_scatter")]),
-                                                    ]),
-                                dcc.Tab(label="ScatterPlot_OverallTrend",
-                                        value="tab-2",
-                                        className="custom-tab",
-                                        children=[html.Div([dcc.Graph(id="graph_scatter_overall_trend")]),
-                                                    ]),
-                                dcc.Tab(label="Continent_trend",
-                                        value="tab-3",
-                                        className="custom-tab",
-                                        children=[html.Div([dcc.Graph(id="graph_continent_trend")]),
-                                                    ]),
-                        ]),
+            html.Div([
+                dcc.Loading(dcc.Graph(id="graph_scatter"), type="graph")])
             ],
             className="section__container",
         ),
@@ -189,73 +172,80 @@ def display_animated_worldmap(energy_type):
     return world_animation
 
 
-@app.callback([Output('graph_scatter', 'figure'),
-               Output('graph_scatter_overall_trend', 'figure'),
-               Output("graph_continent_trend", "figure")],
-              [Input('dropdown', 'value'),
-               Input('tabs-selector', 'value')])
-def update_graph(dropdown, tab):
-    fig1 = px.scatter()
-    fig2 = px.scatter()
-    fig3 = px.scatter()
-
+@app.callback(Output('graph_scatter', 'figure'),
+             [Input('dropdown', 'value'),
+              Input('checklist_social_energy_compare','value')])
+def update_graph(dropdown, values):
     x = dropdown
     y = "Fraction of Low-carbon energy per capita"
     df_int = (df_social_energy.iloc[np.sum(np.array(df_social_energy[[x,y]].isnull())*1.0,axis=1) == 0]
                 .reset_index()
                 .drop(columns='index'))
+
+    for i in np.sort(df_int['Year'].unique()):
+        if len(df_int['Continent'][df_int['Year']==i].unique()) != 6:
+            df_int = df_int[df_int['Year'] != i].reset_index().drop(columns='index')
+        else:
+            break;
+
+    if "Continent" in values:
+        color = 'Continent'
+    else:
+        color = None
+
+    if "Scatter" in values:
+        size = "Energy per capita (kWh)"
+        size_max = 40
+    else:
+        size = df_int[x]*0+0.001
+        size_max = 0.001
+
+    if "Trendline" in values:
+        scope = 'trace'
+        type = 'lowess'
+        frac = 0.6
+    else:
+        scope = None
+        type = None
+        frac = None
+        
     fig1 = px.scatter(df_int, 
-                          x=x, y=y,
-                          size="Energy per capita (kWh)",
-                          color="Continent",
-                          animation_frame="Year", animation_group="Entity",
-                          hover_name="Entity", log_x=False, size_max=60,
-                          range_x=[np.min(df_int[x]),np.max(df_int[x])*1.1], 
-                          range_y=[-0.2,1.2])
-                          #trendline_scope='trace',
-                          #trendline="lowess", 
-                          #trendline_options=dict(frac=0.33))#,trendline_color_override='black')
-    if tab == 'tab-1':
-        fig1 = px.scatter(df_int, 
-                          x=x, y=y,
-                          size="Energy per capita (kWh)",
-                          color="Continent",
-                          animation_frame="Year", animation_group="Entity",
-                          hover_name="Entity", log_x=False, size_max=60,
-                          range_x=[np.min(df_int[x]),np.max(df_int[x])*1.1], 
-                          range_y=[-0.2,1.2])
-                          #trendline_scope='trace',
-                          #trendline="lowess", 
-                          #trendline_options=dict(frac=0.33))#,trendline_color_override='black')
-    elif tab == 'tab-2':
-        fig2 = px.scatter(df_int, 
-                          x=x, y=y,
-                          size="Energy per capita (kWh)",
-                          color="Continent",
-                          animation_frame="Year", animation_group="Entity",
-                          hover_name="Entity", log_x=False, size_max=60,
-                          range_x=[np.min(df_int[x]),np.max(df_int[x])*1.1], 
-                          range_y=[-0.2,1.2])
-                          #trendline_scope='trace',
-                          #trendline="lowess", 
-                          #trendline_options=dict(frac=0.33))#,trendline_color_override='black')
-    elif tab == 'tab-3':
-        fig3 = px.scatter(df_int, 
-                          x=x, y=y,
-                          size="Energy per capita (kWh)",
-                          color="Continent",
-                          animation_frame="Year", animation_group="Entity",
-                          hover_name="Entity", log_x=False, size_max=60,
-                          range_x=[np.min(df_int[x]),np.max(df_int[x])*1.1], 
-                          range_y=[-0.2,1.2])
-                          #trendline_scope='trace',
-                          #trendline="lowess", 
-                          #trendline_options=dict(frac=0.33))#,trendline_color_override='black')
+                      x=x, y=y,
+                      size=size,
+                      color=color,
+                      animation_frame="Year", animation_group="Entity",
+                      hover_name="Entity", log_x=False, size_max=size_max,
+                      range_x=[np.min(df_int[x]),np.max(df_int[x])*1.1], 
+                      range_y=[-0.2,1.2],
+                      labels={y:'Fraction: Low-carbon energy', x:x},
+                      trendline_scope=scope,
+                      trendline=type,
+                      trendline_options=dict(frac=frac))
 
     fig1.update_layout(
         margin={"t": 0, "l": 0, "r": 0, "b": 0}
     )
-    return fig1,fig2,fig3
+
+    if ('Trendline' not in values) & ('Scatter' not in values):
+        fig1.add_annotation(
+            x=1/2*(np.max(df_int[x])*1.1-np.min(df_int[x])),
+            y=0.5,
+            text="Choose either Scatter or Trendline to show data",
+            font=dict(
+                family="Courier New, monospace",
+                size=16,
+                color="Black"
+                ),
+            align="center",
+            bordercolor="Black",
+            borderwidth=2,
+            borderpad=4,
+            bgcolor="#ADD8E6",
+            showarrow=False,
+            opacity=0.8
+            )
+
+    return fig1
 
 
 

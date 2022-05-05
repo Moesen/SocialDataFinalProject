@@ -161,8 +161,8 @@ app.layout = html.Div(
                     ]
                 ),
                 dcc.Checklist(
-                    ["Scatter", "Trendline", "Continent"],
-                    ["Continent", "Scatter"],
+                    ["  Scatter", "  Trendline", "  Continent"],
+                    ["  Continent", "  Scatter"],
                     inline=False,
                     id="checklist_social_energy_compare",
                     labelStyle={"display": "block"},
@@ -268,19 +268,19 @@ def update_graph(dropdown, values):
         else:
             break
 
-    if "Continent" in values:
+    if "  Continent" in values:
         color = "Continent"
     else:
         color = None
 
-    if "Scatter" in values:
+    if "  Scatter" in values:
         size = "Energy per capita (kWh)"
         size_max = 40
     else:
         size = df_int[x] * 0 + 0.001
         size_max = 0.001
 
-    if "Trendline" in values:
+    if "  Trendline" in values:
         scope = "trace"
         type = "lowess"
         frac = 0.6
@@ -310,7 +310,7 @@ def update_graph(dropdown, values):
 
     fig1.update_layout(margin={"t": 0, "l": 0, "r": 0, "b": 0})
 
-    if ("Trendline" not in values) & ("Scatter" not in values):
+    if ("  Trendline" not in values) & ("  Scatter" not in values):
         fig1.add_annotation(
             x=1 / 2 * (np.max(df_int[x]) * 1.1 - np.min(df_int[x])),
             y=0.5,

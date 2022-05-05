@@ -4,7 +4,6 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 from dash import Dash, Input, Output, dcc, html
-from matplotlib.pyplot import colorbar
 
 # Setup of app
 external_stylesheets = [dbc.themes.LUX]
@@ -72,27 +71,36 @@ app.layout = html.Div(
         html.Div(
             [
                 dcc.Dropdown(
-                    sorted(['Coal per capita (kWh)',
-                    'Fossil Fuels per capita (kWh)', 
-                    'Energy per capita (kWh)',
-                    'Low-carbon energy per capita (kWh)', 
-                    'Gas per capita (kWh)',
-                    'Nuclear per capita (kWh)', 
-                    'Oil per capita (kWh)',
-                    'Renewables per capita (kWh)', 
-                    'Wind per capita (kWh)',
-                    'Solar per capita (kWh)', 
-                    'Hydro per capita (kWh)']),
+                    sorted(
+                        [
+                            "Coal per capita (kWh)",
+                            "Fossil Fuels per capita (kWh)",
+                            "Energy per capita (kWh)",
+                            "Low-carbon energy per capita (kWh)",
+                            "Gas per capita (kWh)",
+                            "Nuclear per capita (kWh)",
+                            "Oil per capita (kWh)",
+                            "Renewables per capita (kWh)",
+                            "Wind per capita (kWh)",
+                            "Solar per capita (kWh)",
+                            "Hydro per capita (kWh)",
+                        ]
+                    ),
                     "Coal per capita (kWh)",
-                    id="world_energy_type_selection"
+                    id="world_energy_type_selection",
                 ),
-                html.Div([
-                    dcc.Loading(dcc.Graph(id="world_map_energy_animation"), type="graph"),
-                    dcc.Loading(dcc.Graph(id="world_bar_energy_animation"), type="graph")
-                ], id="worldmap_graph__section")
+                html.Div(
+                    [
+                        dcc.Loading(
+                            dcc.Graph(id="world_map_energy_animation"), type="graph"
+                        ),
+                        # dcc.Loading(dcc.Graph(id="world_bar_energy_animation"), type="graph")
+                    ],
+                    id="worldmap_graph__section",
+                ),
             ],
             className="section__container",
-            id="worldmap__section"
+            id="worldmap__section",
         ),
 
          # -------- Social data and energy type relationship -------- #
@@ -147,27 +155,48 @@ app.layout = html.Div(
 )
 
 
+###-------------- FIRST SECTION PLOTS --------------###
+world_df = pd.read_csv("data/pcc_energy_joined_country_codes.csv", index_col=0)
+world_bar_df = world_df.groupby("Year").sum().unstack().reset_index()
+world_bar_df.columns = ["x", "Year", "y"]
+
+
 @app.callback(
     Output("world_map_energy_animation", "figure"),
-    Input("world_energy_type_selection", "value")
-    )
+    Input("world_energy_type_selection", "value"),
+)
 def display_animated_worldmap(energy_type):
-    df = world_df
     # Worldmap Figure
     world_animation = px.choropleth(
-        df,
+        world_df,
         locations="country_code",
         color=energy_type,
         animation_frame="Year",
         hover_name="Entity",
         color_continuous_scale=["#aaa", "green"],
-        range_color=[df[energy_type].min(), df[energy_type].max()]
+        range_color=[world_df[energy_type].min(), world_df[energy_type].max()],
+    )
+
+    bar_animation = px.bar(
+        world_bar_df,
+        x="y",
+        y="x",
+        animation_frame="Year",
+        orientation="h",
+    )
+
+    bar_animation.update_layout(
+        margin={"t": 0, "l": 0, "r": 0, "b": 0},
     )
 
     world_animation.update_layout(
         margin={"t": 0, "l": 0, "r": 0, "b": 0},
         coloraxis_showscale=False,  # Removes colorbar
     )
+
+    world_animation.add_trace(bar_animation.data[0])
+    for i, frame in enumerate(world_animation.frames):
+        world_animation.frames[i].data += (bar_animation.frames[i].data[0],)
 
     return world_animation
 
@@ -246,11 +275,6 @@ def update_graph(dropdown, values):
             )
 
     return fig1
-
-
-
-
-
 
 
 if __name__ == "__main__":

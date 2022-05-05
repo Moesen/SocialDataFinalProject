@@ -1,5 +1,9 @@
+country_list==1.0.0
 dash==2.3.1
 dash_bootstrap_components==1.1.0
+matplotlib==3.5.1
+numpy==1.22.2
 pandas==1.4.2
 plotly==5.7.0
-gunicorn
+pycountry==22.3.5
+pycountry_convert==0.7.2

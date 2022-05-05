@@ -16,26 +16,39 @@ server = app.server
 world_df = pd.read_csv("data/pcc_energy_joined_country_codes.csv", index_col=0)
 
 
+###### SKRIV BESKRIVELSE ############# SKRIV BESKRIVELSE #######
+data_pcc_country = pd.read_csv(
+    "data/pcc_energy_extrapolated_5_country.csv", index_col=0
+)
+data_socio_country = pd.read_csv("data/socio_extrapolated_5_country.csv", index_col=0)
 
+data_pcc_country = data_pcc_country.set_index(["Entity", "Continent", "Year"])
+data_socio_country = data_socio_country.set_index(["Entity", "Continent", "Year"])
 
+df_social_energy = data_pcc_country.join(data_socio_country, how="outer").reset_index()
+df_social_energy = (
+    df_social_energy.sort_values(["Year", "Entity"]).reset_index().drop(columns="index")
+)
+df_social_energy["Fraction of Low-carbon energy per capita"] = (
+    df_social_energy["Low-carbon energy per capita (kWh)"]
+    / df_social_energy["Energy per capita (kWh)"]
+)
+col_int = [
+    "GDP per capita ($)",
+    "Child mortality rate (under 5 years - %)",
+    "HDI",
+    "Life expectancy (years)",
+    "Tertiary education (%)",
+    "Internet users (%)",
+    "Tax revenue of total GDP (%)",
+]
+df_social_energy = (
+    df_social_energy.sort_values(["Year", "Continent", "Entity"])
+    .reset_index()
+    .drop(columns="index")
+)
 
 ###### SKRIV BESKRIVELSE ############# SKRIV BESKRIVELSE #######
-data_pcc_country = pd.read_csv("data/pcc_energy_extrapolated_5_country.csv",index_col=0)
-data_socio_country = pd.read_csv("data/socio_extrapolated_5_country.csv",index_col=0)
-
-data_pcc_country = data_pcc_country.set_index(['Entity','Continent','Year'])
-data_socio_country = data_socio_country.set_index(['Entity','Continent','Year'])
-
-df_social_energy = data_pcc_country.join(data_socio_country,how='outer').reset_index()
-df_social_energy = df_social_energy.sort_values(['Year','Entity']).reset_index().drop(columns='index')
-df_social_energy['Fraction of Low-carbon energy per capita'] = df_social_energy['Low-carbon energy per capita (kWh)']/df_social_energy['Energy per capita (kWh)']
-col_int = ['GDP per capita ($)','Child mortality rate (under 5 years - %)','HDI','Life expectancy (years)',
-           'Tertiary education (%)','Internet users (%)','Tax revenue of total GDP (%)']
-df_social_energy = df_social_energy.sort_values(['Year','Continent','Entity']).reset_index().drop(columns='index')
-
-###### SKRIV BESKRIVELSE ############# SKRIV BESKRIVELSE #######
-
-
 
 
 app.layout = html.Div(
@@ -61,8 +74,11 @@ app.layout = html.Div(
         dcc.Markdown(
             """
                 ---------------------------------
-                #### **Introduction to our datasets**
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Adipiscing elit duis tristique sollicitudin nibh sit amet commodo nulla. Magna fermentum iaculis eu non diam phasellus vestibulum lorem sed. Blandit libero volutpat sed cras ornare arcu dui vivamus. Phasellus vestibulum lorem sed risus ultricies tristique. Aliquam faucibus purus in massa tempor nec feugiat. Libero volutpat sed cras ornare. Diam vulputate ut pharetra sit amet. Interdum consectetur libero id faucibus nisl tincidunt eget nullam. Lectus nulla at volutpat diam ut venenatis tellus in metus. Diam vel quam elementum pulvinar etiam non quam lacus. Volutpat sed cras ornare arcu dui vivamus arcu felis. Porttitor massa id neque aliquam vestibulum morbi blandit cursus. Platea dictumst quisque sagittis purus.
+                #### **Past, present and future**
+                As the epitome of insightfulness Elon Musk once said: *"If you don't have sustainable energy, you have unsustainable energy."*(source: https://blog.ted.com/what-will-the-future-look-like-elon-musk-speaks-at-ted2017/)
+                Now, more than ever, the need to strive for a green future is essential, but the path is not at all simple or clear.
+                Fortunately, green energy sources are on the rise globally (source: https://www.iea.org/news/renewable-electricity-growth-is-accelerating-faster-than-ever-worldwide-supporting-the-emergence-of-the-new-global-energy-economy), but things are seldom as simple as they might seem. 
+                In the following figure, we see the relationship between the proportion of energy coming from renewable sources against time. We see both the global trend as well as continental trends. 
 
             """,
             className="section__container",
@@ -102,8 +118,7 @@ app.layout = html.Div(
             className="section__container",
             id="worldmap__section",
         ),
-
-         # -------- Social data and energy type relationship -------- #
+        # -------- Social data and energy type relationship -------- #
         html.Br(),
         dcc.Markdown(
             """
@@ -111,24 +126,55 @@ app.layout = html.Div(
             here is the most something something graph
             """
         ),
-        html.Div([
-            dbc.Row([dbc.Col([html.Div("Choose social measure to compare with fraction of low-carbon energy use", className="heading")])]),
-            dbc.Row([dbc.Col(html.Div([dcc.Dropdown(id='dropdown',
-                                options=[{'label': i, 'value': i} for i in sorted(col_int)],
-                                value="GDP per capita ($)")],
+        html.Div(
+            [
+                dbc.Row(
+                    [
+                        dbc.Col(
+                            [
+                                html.Div(
+                                    "Choose social measure to compare with fraction of low-carbon energy use",
+                                    className="heading",
+                                )
+                            ]
+                        )
+                    ]
+                ),
+                dbc.Row(
+                    [
+                        dbc.Col(
+                            html.Div(
+                                [
+                                    dcc.Dropdown(
+                                        id="dropdown",
+                                        options=[
+                                            {"label": i, "value": i}
+                                            for i in sorted(col_int)
+                                        ],
+                                        value="GDP per capita ($)",
+                                    )
+                                ],
                                 className="dropdown",
-                                id="social_data_type_selection")
-            )]),
-            dcc.Checklist(
-                ['Scatter', 'Trendline', 'Continent'],
-                ['Continent', 'Scatter'],
-                inline=False,
-                id = "checklist_social_energy_compare",
-                labelStyle={'display': 'block'}
-            ),
-            html.Div([
-                dcc.Loading(dcc.Graph(id="graph_scatter"), type="graph")])
+                                id="social_data_type_selection",
+                            )
+                        )
+                    ]
+                ),
+                dcc.Checklist(
+                    ["Scatter", "Trendline", "Continent"],
+                    ["Continent", "Scatter"],
+                    inline=False,
+                    id="checklist_social_energy_compare",
+                    labelStyle={"display": "block"},
+                ),
+                html.Div([dcc.Loading(dcc.Graph(id="graph_scatter"), type="graph")]),
             ],
+            className="section__container",
+        ),
+        dcc.Markdown(
+            """
+        hehehehehehehehehehehehehehe
+        """,
             className="section__container",
         ),
         dcc.Markdown(
@@ -201,24 +247,29 @@ def display_animated_worldmap(energy_type):
     return world_animation
 
 
-@app.callback(Output('graph_scatter', 'figure'),
-             [Input('dropdown', 'value'),
-              Input('checklist_social_energy_compare','value')])
+@app.callback(
+    Output("graph_scatter", "figure"),
+    [Input("dropdown", "value"), Input("checklist_social_energy_compare", "value")],
+)
 def update_graph(dropdown, values):
     x = dropdown
     y = "Fraction of Low-carbon energy per capita"
-    df_int = (df_social_energy.iloc[np.sum(np.array(df_social_energy[[x,y]].isnull())*1.0,axis=1) == 0]
-                .reset_index()
-                .drop(columns='index'))
+    df_int = (
+        df_social_energy.iloc[
+            np.sum(np.array(df_social_energy[[x, y]].isnull()) * 1.0, axis=1) == 0
+        ]
+        .reset_index()
+        .drop(columns="index")
+    )
 
-    for i in np.sort(df_int['Year'].unique()):
-        if len(df_int['Continent'][df_int['Year']==i].unique()) != 6:
-            df_int = df_int[df_int['Year'] != i].reset_index().drop(columns='index')
+    for i in np.sort(df_int["Year"].unique()):
+        if len(df_int["Continent"][df_int["Year"] == i].unique()) != 6:
+            df_int = df_int[df_int["Year"] != i].reset_index().drop(columns="index")
         else:
-            break;
+            break
 
     if "Continent" in values:
-        color = 'Continent'
+        color = "Continent"
     else:
         color = None
 
@@ -226,56 +277,56 @@ def update_graph(dropdown, values):
         size = "Energy per capita (kWh)"
         size_max = 40
     else:
-        size = df_int[x]*0+0.001
+        size = df_int[x] * 0 + 0.001
         size_max = 0.001
 
     if "Trendline" in values:
-        scope = 'trace'
-        type = 'lowess'
+        scope = "trace"
+        type = "lowess"
         frac = 0.6
     else:
         scope = None
         type = None
         frac = None
-        
-    fig1 = px.scatter(df_int, 
-                      x=x, y=y,
-                      size=size,
-                      color=color,
-                      animation_frame="Year", animation_group="Entity",
-                      hover_name="Entity", log_x=False, size_max=size_max,
-                      range_x=[np.min(df_int[x]),np.max(df_int[x])*1.1], 
-                      range_y=[-0.2,1.2],
-                      labels={y:'Fraction: Low-carbon energy', x:x},
-                      trendline_scope=scope,
-                      trendline=type,
-                      trendline_options=dict(frac=frac))
 
-    fig1.update_layout(
-        margin={"t": 0, "l": 0, "r": 0, "b": 0}
+    fig1 = px.scatter(
+        df_int,
+        x=x,
+        y=y,
+        size=size,
+        color=color,
+        animation_frame="Year",
+        animation_group="Entity",
+        hover_name="Entity",
+        log_x=False,
+        size_max=size_max,
+        range_x=[np.min(df_int[x]), np.max(df_int[x]) * 1.1],
+        range_y=[-0.2, 1.2],
+        labels={y: "Fraction: Low-carbon energy", x: x},
+        trendline_scope=scope,
+        trendline=type,
+        trendline_options=dict(frac=frac),
     )
 
-    if ('Trendline' not in values) & ('Scatter' not in values):
+    fig1.update_layout(margin={"t": 0, "l": 0, "r": 0, "b": 0})
+
+    if ("Trendline" not in values) & ("Scatter" not in values):
         fig1.add_annotation(
-            x=1/2*(np.max(df_int[x])*1.1-np.min(df_int[x])),
+            x=1 / 2 * (np.max(df_int[x]) * 1.1 - np.min(df_int[x])),
             y=0.5,
             text="Choose either Scatter or Trendline to show data",
-            font=dict(
-                family="Courier New, monospace",
-                size=16,
-                color="Black"
-                ),
+            font=dict(family="Courier New, monospace", size=16, color="Black"),
             align="center",
             bordercolor="Black",
             borderwidth=2,
             borderpad=4,
             bgcolor="#ADD8E6",
             showarrow=False,
-            opacity=0.8
-            )
+            opacity=0.8,
+        )
 
     return fig1
 
 
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run_server(debug=True, port=8050, host="127.0.0.1")

@@ -78,7 +78,36 @@ app.layout = html.Div(
                 As the epitome of insightfulness Elon Musk once said: *"If you don't have sustainable energy, you have unsustainable energy."*(source: https://blog.ted.com/what-will-the-future-look-like-elon-musk-speaks-at-ted2017/)
                 Now, more than ever, the need to strive for a green future is essential, but the path is not at all simple or clear.
                 Fortunately, green energy sources are on the rise globally (source: https://www.iea.org/news/renewable-electricity-growth-is-accelerating-faster-than-ever-worldwide-supporting-the-emergence-of-the-new-global-energy-economy), but things are seldom as simple as they might seem. 
-                In the following figure, we see the relationship between the proportion of energy coming from renewable sources against time. We see both the global trend as well as continental trends. 
+                In the following figure, we see the relationship between the proportion of energy coming from renewable sources against time.
+                The data is from (source: https://ourworldindata.org/) and consists of yearly readings.
+                We see the continental trends, and the average of these, called global. 
+
+                INSERT STATIC GRAPH
+
+                As one might suspect, the trends vary greatly from continent to continent. We see that Europe is steadily increasing their fraction of reenewable energy. 
+                On the other hand, we see that Africa has in fact declined, which is a point is worth lingering on. 
+                For many countries (and especially those of Africa) recordings do not date back as far as, say, those of Europe. 
+                Thus, as new countries enter the data, we might see sudden changes in the continental averages. 
+                From the graph, we also see that South America is doing a good job as measured by fraction of renewable energy. 
+                However, of the 6 populated continents, South Africa is second to last. 
+                As the name global warming suggests, the problem should, at the end of the day, be considered at a global level, which means that at the end of the day, the values for e.g. Asia are more important than those of South America. 
+                Asia is more populous than the remaining continents combined, and from the figure we see that their fraction has steadied of at somewhere between 0.05-0.06. 
+                In fact, Africa and Asia consists of roughly 76.74% of the world population and are far below the global fraction.
+                This is essentially the same argument as "Why should we, the small country of Denmark, bother with climate change when our net contribution is negligible".
+                We will refrain from diving into this moral debate. 
+                In order to investigate the issue at an even deeper level, we can look at the patterns at a country level across time. 
+
+                INSERT MOESMAND FIGURE 
+
+
+                At the end of the day, what we see is that there is quite large variety between countries when we measure their fraction of renewable energy. 
+                One posssible part of the explanation is differences in social and economic measures between countries. 
+                For the remainder of this article, we will delve deeper into this relationship between energy consumption and social/economic measures.   
+                
+                
+
+                
+
 
             """,
             className="section__container",

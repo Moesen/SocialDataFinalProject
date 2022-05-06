@@ -38,6 +38,7 @@ col_int = [
     "Child mortality rate (under 5 years - %)",
     "HDI",
     "Life expectancy (years)",
+    "Population",
     "Tertiary education (%)",
     "Internet users (%)",
     "Tax revenue of total GDP (%)",
@@ -291,6 +292,11 @@ def update_graph(dropdown, values):
         .drop(columns="index")
     )
 
+    if dropdown == 'Population':
+        log_axis = True
+    else:
+        log_axis = False
+
     for i in np.sort(df_int["Year"].unique()):
         if len(df_int["Continent"][df_int["Year"] == i].unique()) != 6:
             df_int = df_int[df_int["Year"] != i].reset_index().drop(columns="index")
@@ -329,7 +335,7 @@ def update_graph(dropdown, values):
         animation_frame="Year",
         animation_group="Entity",
         hover_name="Entity",
-        log_x=False,
+        log_x=log_axis,
         size_max=size_max,
         range_x=[np.min(df_int[x]), np.max(df_int[x]) * 1.1],
         range_y=[-0.2, 1.2],

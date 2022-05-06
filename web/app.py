@@ -75,7 +75,7 @@ app.layout = html.Div(
         dcc.Markdown(
             """
                 ---------------------------------
-                #### **Past, present and future**
+                #### **Past, present and future of energy**
                 As the epitome of insightfulness Elon Musk once said: *"If you don't have sustainable energy, you have unsustainable energy."*(source: https://blog.ted.com/what-will-the-future-look-like-elon-musk-speaks-at-ted2017/)
                 Now, more than ever, the need to strive for a green future is essential, but the path is not at all simple or clear.
                 Fortunately, green energy sources are on the rise globally (source: https://www.iea.org/news/renewable-electricity-growth-is-accelerating-faster-than-ever-worldwide-supporting-the-emergence-of-the-new-global-energy-economy), but things are seldom as simple as they might seem. 
@@ -105,7 +105,29 @@ app.layout = html.Div(
                 One posssible part of the explanation is differences in social and economic measures between countries. 
                 For the remainder of this article, we will delve deeper into this relationship between energy consumption and social/economic measures.   
                 
-                
+                #### **Exploring relationship between energy and social/economic measures**
+                Our hypothesis is that energy consumption is linked with measures of social and enomic aspects at several levels. 
+                Additionally, we hypothesize that the causality of this relationship can be hard to determine, but our guess is that higher social/economic measures eventually will lead to a more green energy profile for a country.
+                Thus, when a country gets richer (both economically and socially), it will transition to haaving a larger fraction of renewable energy.
+                In order to investigate this hypothesis, we graph the fraction of renewable energy against a specific social/economic measure, and then let the data flow with time.
+                Each point corresponds to a country. 
+
+                INSERT WEIS FIGURE 
+
+                For most measures, we irst and foremost observe that said measure improves over time. 
+                Taking HDI as an example, we very clearly see that almost all countries get a higher HDI over time, which in itself is a very positive and hopeful observation.
+                We do, however, not see as significant an improvement in the fraction of renewable energy.
+                We really only do see the trend of higher fraction following higher measure for the green dots, which is Europe. 
+                In order to investigate the relationship in a slightly more robust and precise manner, we can try to model the problem. 
+
+
+                #### **Modelling relationship between energy and social/economic measures**
+                In order to model the relationship, we will make use of a model called partial least squares. 
+                In terms of specific variables, we will limit those representing energy to the fraction of reenewable energy, which was also mentioned earlier. 
+                We will then investigate how social and economic measures relate to this variable. 
+                It is important to note that the model works by making projections, thus creating a latent space. 
+                This means that we have to be careful with how we interpret the results of the model.
+                See e.g. (source: ) for further details. 
 
                 
 
@@ -308,10 +330,10 @@ def update_graph(dropdown, values):
         trendline_color = None
     else:
         color = None
-        trendline_color = 'Black'
+        trendline_color = "Black"
 
     if "  Scatter" in values:
-        size = df_int["Population"]**(1/2) #"Energy per capita (kWh)"
+        size = df_int["Population"] ** (1 / 2)  # "Energy per capita (kWh)"
         size_max = 40
     else:
         size = df_int[x] * 0 + 0.001
@@ -343,13 +365,13 @@ def update_graph(dropdown, values):
         trendline_scope=scope,
         trendline=type,
         trendline_options=dict(frac=frac),
-        trendline_color_override=trendline_color
+        trendline_color_override=trendline_color,
     )
 
     fig1.update_layout(margin={"t": 0, "l": 0, "r": 0, "b": 0})
     fig1.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 200
-    fig1.add_hline(y=1,line_width=1, line_dash="dash", line_color="gray")
-    fig1.add_hline(y=0,line_width=1, line_dash="dash", line_color="gray")
+    fig1.add_hline(y=1, line_width=1, line_dash="dash", line_color="gray")
+    fig1.add_hline(y=0, line_width=1, line_dash="dash", line_color="gray")
     if ("  Trendline" not in values) & ("  Scatter" not in values):
         fig1.add_annotation(
             x=1 / 2 * (np.max(df_int[x]) * 1.1 - np.min(df_int[x])),

@@ -151,7 +151,7 @@ app.layout = html.Div(
                                             {"label": i, "value": i}
                                             for i in sorted(col_int)
                                         ],
-                                        value="GDP per capita ($)",
+                                        value="HDI",
                                     )
                                 ],
                                 className="dropdown",
@@ -270,11 +270,13 @@ def update_graph(dropdown, values):
 
     if "  Continent" in values:
         color = "Continent"
+        trendline_color = None
     else:
         color = None
+        trendline_color = 'Black'
 
     if "  Scatter" in values:
-        size = "Energy per capita (kWh)"
+        size = df_int["Population"]**(1/2) #"Energy per capita (kWh)"
         size_max = 40
     else:
         size = df_int[x] * 0 + 0.001
@@ -283,7 +285,7 @@ def update_graph(dropdown, values):
     if "  Trendline" in values:
         scope = "trace"
         type = "lowess"
-        frac = 0.6
+        frac = 0.75
     else:
         scope = None
         type = None
@@ -302,14 +304,17 @@ def update_graph(dropdown, values):
         size_max=size_max,
         range_x=[np.min(df_int[x]), np.max(df_int[x]) * 1.1],
         range_y=[-0.2, 1.2],
-        labels={y: "Fraction: Low-carbon energy", x: x},
+        labels={y: "Fraction of Renewable Energy ", x: x},
         trendline_scope=scope,
         trendline=type,
         trendline_options=dict(frac=frac),
+        trendline_color_override=trendline_color
     )
 
     fig1.update_layout(margin={"t": 0, "l": 0, "r": 0, "b": 0})
-
+    fig1.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 200
+    fig1.add_hline(y=1,line_width=1, line_dash="dash", line_color="gray")
+    fig1.add_hline(y=0,line_width=1, line_dash="dash", line_color="gray")
     if ("  Trendline" not in values) & ("  Scatter" not in values):
         fig1.add_annotation(
             x=1 / 2 * (np.max(df_int[x]) * 1.1 - np.min(df_int[x])),

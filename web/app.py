@@ -4,6 +4,7 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 from dash import Dash, Input, Output, dcc, html
+from matplotlib.pyplot import colorbar
 
 # Setup of app
 external_stylesheets = [dbc.themes.LUX]
@@ -48,9 +49,6 @@ df_social_energy = (
     .reset_index()
     .drop(columns="index")
 )
-
-###### SKRIV BESKRIVELSE ############# SKRIV BESKRIVELSE #######
-
 
 app.layout = html.Div(
     [
@@ -113,7 +111,6 @@ app.layout = html.Div(
                 Each point corresponds to a country. 
 
                 INSERT WEIS FIGURE 
-
                 For most measures, we irst and foremost observe that said measure improves over time. 
                 Taking HDI as an example, we very clearly see that almost all countries get a higher HDI over time, which in itself is a very positive and hopeful observation.
                 We do, however, not see as significant an improvement in the fraction of renewable energy.
@@ -128,14 +125,34 @@ app.layout = html.Div(
                 It is important to note that the model works by making projections, thus creating a latent space. 
                 This means that we have to be careful with how we interpret the results of the model.
                 See e.g. (source: ) for further details. 
-
-                
-
-
             """,
             className="section__container",
         ),
         # --------  -------- #
+        html.Div(
+            [
+                dcc.Dropdown(
+                    sorted(['Coal per capita (kWh)',
+                    'Fossil Fuels per capita (kWh)', 
+                    'Energy per capita (kWh)',
+                    'Low-carbon energy per capita (kWh)', 
+                    'Gas per capita (kWh)',
+                    'Nuclear per capita (kWh)', 
+                    'Oil per capita (kWh)',
+                    'Renewables per capita (kWh)', 
+                    'Wind per capita (kWh)',
+                    'Solar per capita (kWh)', 
+                    'Hydro per capita (kWh)']),
+                    "Coal per capita (kWh)",
+                    id="world_energy_type_selection"
+                ),
+                html.Div([
+                    dcc.Loading(dcc.Graph(id="world_map_energy_animation"), type="graph"),
+                    dcc.Loading(dcc.Graph(id="world_bar_energy_animation"), type="graph")
+                ], id="worldmap_graph__section")
+            ],
+            className="section__container",
+            id="worldmap__section"),
         html.Div(
             [
                 dcc.Dropdown(

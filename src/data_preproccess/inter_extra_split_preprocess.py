@@ -4,6 +4,7 @@ from functools import reduce
 
 import numpy as np
 import pandas as pd
+import pycountry_convert as pc
 from country_list import countries_for_language
 
 
@@ -143,8 +144,8 @@ def interpolate_data(out_path: str, df_name: str):
                     i = i + 1
                     continue
 
-    print(f"Saving to csv in {out_path + f'{df_name}_interpolated.csv'}")
-    print(f"Saving to csv in {out_path + f'{df_name}_interpolated_mask.csv'}")
+    print(f"Saving to csv in {out_path + f'/{df_name}_interpolated.csv'}")
+    print(f"Saving to csv in {out_path + f'/{df_name}_interpolated_mask.csv'}")
 
     df.to_csv(os.path.join(out_path, f"{df_name}_interpolated.csv"))
     df_interp_mask.to_csv(os.path.join(out_path, f"{df_name}_interpolated_mask.csv"))
@@ -222,7 +223,7 @@ def extrapolate_data(out_path: str, x_extrap: int, df_name: str):
     )
 
 
-def split_data_country_area(out_path: str, x_extrap, df_name: str):
+def split_data_country_area(out_path: str, processed_path: str, x_extrap, df_name: str):
     df = pd.read_csv(
         os.path.join(out_path, f"{df_name}_extrapolated_" + str(x_extrap) + ".csv"),
         index_col=0,
@@ -308,35 +309,50 @@ def split_data_country_area(out_path: str, x_extrap, df_name: str):
         .drop(columns="index")
     )
 
+    # Add continent info and remove countries with no continent info
+    countries_code = pd.Series(np.array(countries_for_language('en'))[:,0],dtype="string")
+    df_country['Continent'] = np.nan
+    for indx, ent in enumerate(df_country['Entity']):
+        try:
+            cont = pc.convert_continent_code_to_continent_name(
+            pc.country_alpha2_to_continent_code(countries_code.iloc[list(countries).index(ent)]))
+            df_country.loc[indx,'Continent'] = cont
+        except:
+            continue;
+
+    cols = df_country.columns[[0,-1]+list(np.arange(1,len(df_country.columns)-1,1))]
+    df_country = df_country[cols]
+    df_country = df_country[df_country['Continent'].notna()]
+
     print(
-        f"Saving to csv in {out_path + f'/{df_name}_extrapolated_' + str(x_extrap) + '_country.csv'}"
+        f"Saving to csv in {processed_path + f'/{df_name}_extrapolated_' + str(x_extrap) + '_country.csv'}"
     )
     print(
-        f"Saving to csv in {out_path + f'/{df_name}_extrapolated_mask_' + str(x_extrap) + '_country.csv'}"
+        f"Saving to csv in {processed_path + f'/{df_name}_extrapolated_mask_' + str(x_extrap) + '_country.csv'}"
     )
     print(
-        f"Saving to csv in {out_path + f'/{df_name}_extrapolated_' + str(x_extrap) + '_area.csv'}"
+        f"Saving to csv in {processed_path + f'/{df_name}_extrapolated_' + str(x_extrap) + '_area.csv'}"
     )
     print(
-        f"Saving to csv in {out_path + f'/{df_name}_extrapolated_mask_' + str(x_extrap) + '_area.csv'}"
+        f"Saving to csv in {processed_path + f'/{df_name}_extrapolated_mask_' + str(x_extrap) + '_area.csv'}"
     )
 
     df_country.to_csv(
         os.path.join(
-            out_path, f"{df_name}_extrapolated_" + str(x_extrap) + "_country.csv"
+            processed_path, f"{df_name}_extrapolated_" + str(x_extrap) + "_country.csv"
         )
     )
     df_mask_country.to_csv(
         os.path.join(
-            out_path, f"{df_name}_extrapolated_mask_" + str(x_extrap) + "_country.csv"
+            processed_path, f"{df_name}_extrapolated_mask_" + str(x_extrap) + "_country.csv"
         )
     )
     df_area.to_csv(
-        os.path.join(out_path, f"{df_name}_extrapolated_" + str(x_extrap) + "_area.csv")
+        os.path.join(processed_path, f"{df_name}_extrapolated_" + str(x_extrap) + "_area.csv")
     )
     df_mask_area.to_csv(
         os.path.join(
-            out_path, f"{df_name}_extrapolated_mask_" + str(x_extrap) + "_area.csv"
+            processed_path, f"{df_name}_extrapolated_mask_" + str(x_extrap) + "_area.csv"
         )
     )
 
@@ -345,16 +361,18 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Merging data from raw folder")
     parser.add_argument("--input_path", type=is_dir)
     parser.add_argument("--output_path", type=is_dir)
+    parser.add_argument("--processed_path", type=is_dir)
     parser.add_argument("--x_extrap", type=int)
     parser.add_argument("--df_name", type=str)
     args = parser.parse_args()
 
-    in_path, out_path, x_extrap, df_name = (
+    in_path, out_path, processed_path, x_extrap, df_name = (
         args.input_path,
         args.output_path,
+        args.processed_path,
         args.x_extrap,
         args.df_name,
     )
     interpolate_data(out_path, df_name)
     extrapolate_data(out_path, x_extrap, df_name)
-    split_data_country_area(out_path, x_extrap, df_name)
+    split_data_country_area(out_path, processed_path, x_extrap, df_name)

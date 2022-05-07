@@ -48,6 +48,9 @@ if __name__ == "__main__":
         pcc_dfs,
     )
 
+    ac_final = ac_final[ac_final.Year >= 1965].reset_index().drop(columns="index")
+    pcc_final = pcc_final[pcc_final.Year < 2020].reset_index().drop(columns="index")
+
     print(f"Saving to csv in {out_path}")
     ac_final.to_csv(os.path.join(out_path, "ac_energy_joined.csv"))
     pcc_final.to_csv(os.path.join(out_path, "pcc_energy_joined.csv"))

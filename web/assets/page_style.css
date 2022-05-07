@@ -22,6 +22,10 @@
     width: 30%;
 }
 
+#pls_component_type_selection {
+    width: 20%;
+}
+
 #worldmap_graph__section {
     display: flex;
     box-sizing: border-box;

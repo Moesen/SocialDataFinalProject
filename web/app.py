@@ -2,7 +2,9 @@ import dash_bootstrap_components as dbc
 import pandas as pd
 import numpy as np
 import plotly.express as px
+import plotly.graph_objects as go
 from dash import Dash, Input, Output, dcc, html
+
 
 # Setup of app
 external_stylesheets = [dbc.themes.LUX]
@@ -67,10 +69,36 @@ app.layout = html.Div(
                 This is essentially the same argument as "Why should we, the small country of Denmark, bother with climate change when our net contribution is negligible".
                 We will refrain from diving into this moral debate. 
                 In order to investigate the issue at an even deeper level, we can look at the patterns at a country level across time. 
-
-                INSERT MOESMAND FIGURE 
-
-
+            """, 
+        className="section__container"),
+        # --------  -------- #
+        html.Div(
+            [
+                dcc.Dropdown(
+                    sorted([
+                        'Coal',
+                        'Fossil Fuels', 
+                        'Energy',
+                        'Low-carbon energy', 
+                        'Gas',
+                        'Nuclear', 
+                        'Oil',
+                        'Renewables', 
+                        'Wind',
+                        'Solar', 
+                        'Hydro']),
+                        "Coal per capita (kWh)",
+                    id="world_energy_type_selection"
+                ),
+                html.Div([
+                    dcc.Loading(dcc.Graph(id="world_map_energy_animation"), type="graph"),
+                    dcc.Loading(dcc.Graph(id="world_map_bar_animation"), type="graph"),
+                ], id="worldmap_graph__section")
+            ],
+            className="section__container",
+            id="worldmap__section"),
+        dcc.Markdown(
+            """
                 At the end of the day, what we see is that there is quite large variety between countries when we measure their fraction of renewable energy. 
                 One posssible part of the explanation is differences in social and economic measures between countries. 
                 For the remainder of this article, we will delve deeper into this relationship between energy consumption and social/economic measures.   
@@ -99,31 +127,6 @@ app.layout = html.Div(
             """,
             className="section__container",
         ),
-        # --------  -------- #
-        html.Div(
-            [
-                dcc.Dropdown(
-                    sorted([
-                        'Coal',
-                        'Fossil Fuels', 
-                        'Energy',
-                        'Low-carbon energy', 
-                        'Gas',
-                        'Nuclear', 
-                        'Oil',
-                        'Renewables', 
-                        'Wind',
-                        'Solar', 
-                        'Hydro']),
-                        "Coal per capita (kWh)",
-                    id="world_energy_type_selection"
-                ),
-                html.Div([
-                    dcc.Loading(dcc.Graph(id="world_map_energy_animation"), type="graph"),
-                ], id="worldmap_graph__section")
-            ],
-            className="section__container",
-            id="worldmap__section"),
         # -------- Social data and energy type relationship -------- #
         html.Br(),
         dcc.Markdown(
@@ -296,10 +299,12 @@ world_bar_df.columns = ["x", "Year", "y"]
 
 @app.callback(
     Output("world_map_energy_animation", "figure"),
+    Output("world_map_bar_animation", "figure"),
     Input("world_energy_type_selection", "value"),
 )
 def display_animated_worldmap(energy_type):
     # Worldmap Figure
+
     world_animation = px.choropleth(
         world_df,
         locations="country_code",
@@ -310,28 +315,15 @@ def display_animated_worldmap(energy_type):
         range_color=[world_df[energy_type].min(), world_df[energy_type].max()],
     )
 
-    bar_animation = px.bar(
-        world_bar_df,
-        x="y",
-        y="x",
-        animation_frame="Year",
-        orientation="h",
-    )
+#    bar_animation = px.bar(
+#        world_bar_df,
+#        x="y",
+#        y="x",
+#        animation_frame="Year",
+#        orientation="h",
+#    )
 
-    bar_animation.update_layout(
-        margin={"t": 0, "l": 0, "r": 0, "b": 0},
-    )
-
-    world_animation.update_layout(
-        margin={"t": 0, "l": 0, "r": 0, "b": 0},
-        coloraxis_showscale=False,  # Removes colorbar
-    )
-
-    world_animation.add_trace(bar_animation.data[0])
-    for i, _ in enumerate(world_animation.frames):
-        world_animation.frames[i].data += (bar_animation.frames[i].data[0],)
-
-    return world_animation
+    return world_animation, world_animation
 
 
 ###-------------- SECOND SECTION PLOTS --------------###

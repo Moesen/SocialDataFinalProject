@@ -1,7 +1,7 @@
 import argparse
 import os
 from functools import reduce
-
+import pdb
 import numpy as np
 import pandas as pd
 from country_list import countries_for_language
@@ -16,13 +16,14 @@ def is_dir(path: str) -> str:
 
 def load_data_and_merge(in_path: str, out_path: str):
     socio_data = [x for x in os.listdir(os.path.join(in_path, "Socio_eco_data"))]
-
+    socio_data = [x for x in socio_data if '.DS_Store' not in x]
+    
     print(f"Merging socio_dfs ({len(socio_data)})")
     socio_dfs = [
         pd.read_csv(os.path.join(in_path, "Socio_eco_data", filename))
         for filename in socio_data
     ]
-
+    
     for df in socio_dfs:
         if "Code" in df.columns:
             df.drop("Code", inplace=True, axis=1)
@@ -87,6 +88,7 @@ def preprocces_data(out_path: str, df: pd.DataFrame):
             df.drop(columns=col, inplace=True)
 
     df.columns = [col for col in cols if "to_drop" not in col]
+    
 
     df["HDI"] = pd.to_numeric(df["HDI"])
     for indx in range(len(df["HDI"])):

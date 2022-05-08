@@ -17,7 +17,7 @@ server = app.server
 world_df = pd.read_csv("data/pcc_energy_joined_country_codes.csv", index_col=0)
 
 
-###### SKRIV BESKRIVELSE ############# SKRIV BESKRIVELSE #######
+###### SECOND SECTION DATA ######
 data_pcc_country = pd.read_csv(
     "data/pcc_energy_extrapolated_5_country.csv", index_col=0
 )
@@ -49,6 +49,11 @@ df_social_energy = (
     .reset_index()
     .drop(columns="index")
 )
+
+###### THIRD SECTION DATA ######
+y_loadings = pd.read_csv("data/y_loadings_v.csv", index_col=0)
+loadings_v = pd.read_csv("data/loadings_v.csv", index_col=0)
+test_data = pd.read_csv("data/test_data.csv", index_col=0)
 
 app.layout = html.Div(
     [
@@ -212,6 +217,54 @@ app.layout = html.Div(
         """,
             className="section__container",
         ),
+        html.Br(),
+        dcc.Markdown(
+            """
+            #### **Results**
+            Look at these PLS components my friends
+            """
+        ),
+        html.Div(
+            [
+                dbc.Row(
+                    [
+                        dbc.Col(
+                            [
+                                html.Div(
+                                    "",
+                                    className="heading",
+                                )
+                            ]
+                        )
+                    ]
+                ),
+                dbc.Row(
+                    [
+                        dbc.Col(
+                            html.Div(
+                                [
+                                    dcc.Dropdown(
+                                        id="dropdown2",
+                                        options=[
+                                            {
+                                                "label": str(f'PLS Component {i+1}'), 
+                                                "value": i+1
+                                            }
+                                            for i in range(3)
+                                        ],
+                                        value=1,
+                                    )
+                                ],
+                                className="dropdown",
+                                id="pls_component_type_selection",
+                            )
+                        )
+                    ]
+                ),
+                html.Div([dcc.Loading(dcc.Graph(id="pls_components"), type="graph")]),
+            ],
+            className="section__container",
+        ),
         dcc.Markdown(
             """
                 ------------
@@ -282,6 +335,7 @@ def display_animated_worldmap(energy_type):
     return world_animation
 
 
+###-------------- SECOND SECTION PLOTS --------------###
 @app.callback(
     Output("graph_scatter", "figure"),
     [Input("dropdown", "value"), Input("checklist_social_energy_compare", "value")],
@@ -316,10 +370,10 @@ def update_graph(dropdown, values):
         trendline_color = "Black"
 
     if "  Scatter" in values:
-        size = df_int["Population"] ** (1 / 2)  # "Energy per capita (kWh)"
+        df_int['size'] = df_int["Population"] ** (1 / 2)  # "Energy per capita (kWh)"
         size_max = 40
     else:
-        size = df_int[x] * 0 + 0.001
+        df_int['size'] = df_int[x] * 0 + 0.001
         size_max = 0.001
 
     if "  Trendline" in values:
@@ -335,11 +389,10 @@ def update_graph(dropdown, values):
         df_int,
         x=x,
         y=y,
-        size=size,
+        size="size",
         color=color,
         animation_frame="Year",
         animation_group="Entity",
-        hover_name="Entity",
         log_x=log_axis,
         size_max=size_max,
         range_x=[np.min(df_int[x]), np.max(df_int[x]) * 1.1],
@@ -349,6 +402,12 @@ def update_graph(dropdown, values):
         trendline=type,
         trendline_options=dict(frac=frac),
         trendline_color_override=trendline_color,
+        hover_name="Entity",
+        hover_data={"Continent": True,
+                    "Year": False,
+                    x: True,
+                    y: True,
+                    "size": False}
     )
 
     fig1.update_layout(margin={"t": 0, "l": 0, "r": 0, "b": 0})
@@ -371,6 +430,107 @@ def update_graph(dropdown, values):
         )
 
     return fig1
+
+
+
+###-------------- THIRD SECTION PLOTS --------------###
+@app.callback(
+    Output("pls_components", "figure"),
+    Input("dropdown2", "value"),
+)
+def update_graph(dropdown2):
+    comp = dropdown2
+    social_feats = pd.Series(loadings_v['Feature'][loadings_v['Continent'] == False]).unique()
+    continents =  pd.Series(loadings_v['Feature'][loadings_v['Continent'] == True]).unique()
+
+    colormap = {}
+    for indx,i in enumerate(social_feats):
+        colormap[i] = px.colors.qualitative.Pastel[indx]
+    for indx,i in enumerate(continents):
+        colormap[i] = px.colors.qualitative.Antique[indx]
+
+
+    fig = px.bar(loadings_v[loadings_v['PLS Component'] == comp], x="x", y="Loading", color="Feature", barmode='group',
+                facet_col='Continent', facet_col_wrap=1, color_discrete_map=colormap,
+                category_orders={'Continent':[False, True]},
+                labels={'x':''},
+                width=1200, height=400,
+                facet_row_spacing = 0.125,
+                hover_name="Feature",hover_data={"Loading": True,
+                                                "Feature": False,
+                                                "Continent": False,
+                                                "x":False,
+                                                "PLS Component":False})
+
+    fig.update_yaxes(tickvals=[-1.0,-0.8,-0.6,-0.4,-0.2,0.0,0.2,0.4,0.6,0.8,1.0])
+    fig.update_layout(
+        xaxis = dict(
+            showticklabels=False
+        ),
+        xaxis2 = dict(
+            showticklabels=False
+        ),
+        xaxis3 = dict(
+            showticklabels=False
+        )
+    )
+
+    fig.update_layout(
+        margin=dict(l=40, r=750, t=40, b=40)
+    )
+
+    fig.update_layout(legend=dict(
+        yanchor="top",
+        y=0.99,
+        xanchor="left",
+        x=1.05
+    ))
+
+    if comp == 1:
+        anno_text = str(f'         <b>PLS Component 1</b><br><br>'+
+                        f'The correlation coefficient <br>with the target variable is: <b>{y_loadings.iloc[0,0]:.3f}' + 
+                        '</b><br><br>This PLS component seems to capture<br>'+
+                        'the highly developed <b>European</b><br>'+ 
+                        'countries... Etc.<br>'+
+                        'Example: Iceland')
+    elif comp == 2:
+        anno_text = str(f'         <b>PLS Component 2</b><br><br>'+
+                        f'The correlation coefficient <br>with the target variable is: <b>{y_loadings.iloc[1,0]:.3f}' + 
+                        '</b><br><br>This PLS component seems to capture<br>'+
+                        'the poorly developed <b>South</b><br>'+ 
+                        '<b>American</b> countries. (weird).. Etc.<br>'+
+                        'Example: Brazil')
+    else:
+        anno_text = str(f'         <b>PLS Component 3</b><br><br>'+
+                        f'The correlation coefficient <br>with the target variable is: <b>{y_loadings.iloc[2,0]:.3f}' + 
+                        '</b><br><br>This PLS component seems to capture<br>'+
+                        'the larger <b>Asian</b> countries. Etc<br>'+ 
+                        'Example: China')
+
+    fig.add_annotation(
+        yanchor="top",
+        xanchor="left",
+        yref = 'paper',
+        xref = 'paper',
+        x=1.95,
+        y=1,
+        text=anno_text,
+        font=dict(family="Courier New, monospace", size=16, color="Black"),
+        align="left",
+        bordercolor="Black",
+        borderwidth=1,
+        borderpad=4,
+        bgcolor="#EBECF0",
+        showarrow=False,
+        opacity=0.8,
+    )
+
+    fig.for_each_annotation(lambda a: a.update(text=a.text.replace("Continent=True", "<b>Continents</b>")))
+    fig.for_each_annotation(lambda a: a.update(text=a.text.replace("Continent=False", "<b>Social metrics</b>")))
+        
+    return fig
+
+
 
 
 if __name__ == "__main__":

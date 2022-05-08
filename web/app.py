@@ -153,40 +153,6 @@ app.layout = html.Div(
             ],
             className="section__container",
             id="worldmap__section"),
-        html.Div(
-            [
-                dcc.Dropdown(
-                    sorted(
-                        [
-                            "Coal per capita (kWh)",
-                            "Fossil Fuels per capita (kWh)",
-                            "Energy per capita (kWh)",
-                            "Low-carbon energy per capita (kWh)",
-                            "Gas per capita (kWh)",
-                            "Nuclear per capita (kWh)",
-                            "Oil per capita (kWh)",
-                            "Renewables per capita (kWh)",
-                            "Wind per capita (kWh)",
-                            "Solar per capita (kWh)",
-                            "Hydro per capita (kWh)",
-                        ]
-                    ),
-                    "Coal per capita (kWh)",
-                    id="world_energy_type_selection",
-                ),
-                html.Div(
-                    [
-                        dcc.Loading(
-                            dcc.Graph(id="world_map_energy_animation"), type="graph"
-                        ),
-                        # dcc.Loading(dcc.Graph(id="world_bar_energy_animation"), type="graph")
-                    ],
-                    id="worldmap_graph__section",
-                ),
-            ],
-            className="section__container",
-            id="worldmap__section",
-        ),
         # -------- Social data and energy type relationship -------- #
         html.Br(),
         dcc.Markdown(

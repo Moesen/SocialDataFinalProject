@@ -2,9 +2,7 @@ import dash_bootstrap_components as dbc
 import pandas as pd
 import numpy as np
 import plotly.express as px
-import plotly.graph_objects as go
 from dash import Dash, Input, Output, dcc, html
-from matplotlib.pyplot import colorbar
 
 # Setup of app
 external_stylesheets = [dbc.themes.LUX]
@@ -13,27 +11,6 @@ app = Dash(__name__, external_stylesheets=external_stylesheets)
 #   web: ... app:server
 server = app.server
 
-# Reading locations and counts for locations of sensors
-world_df = pd.read_csv("data/pcc_energy_joined_country_codes.csv", index_col=0)
-
-
-###### SECOND SECTION DATA ######
-data_pcc_country = pd.read_csv(
-    "data/pcc_energy_extrapolated_5_country.csv", index_col=0
-)
-data_socio_country = pd.read_csv("data/socio_extrapolated_5_country.csv", index_col=0)
-
-data_pcc_country = data_pcc_country.set_index(["Entity", "Continent", "Year"])
-data_socio_country = data_socio_country.set_index(["Entity", "Continent", "Year"])
-
-df_social_energy = data_pcc_country.join(data_socio_country, how="outer").reset_index()
-df_social_energy = (
-    df_social_energy.sort_values(["Year", "Entity"]).reset_index().drop(columns="index")
-)
-df_social_energy["Fraction of Low-carbon energy per capita"] = (
-    df_social_energy["Low-carbon energy per capita (kWh)"]
-    / df_social_energy["Energy per capita (kWh)"]
-)
 col_int = [
     "GDP per capita ($)",
     "Child mortality rate (under 5 years - %)",
@@ -44,16 +21,6 @@ col_int = [
     "Internet users (%)",
     "Tax revenue of total GDP (%)",
 ]
-df_social_energy = (
-    df_social_energy.sort_values(["Year", "Continent", "Entity"])
-    .reset_index()
-    .drop(columns="index")
-)
-
-###### THIRD SECTION DATA ######
-y_loadings = pd.read_csv("data/y_loadings_v.csv", index_col=0)
-loadings_v = pd.read_csv("data/loadings_v.csv", index_col=0)
-test_data = pd.read_csv("data/test_data.csv", index_col=0)
 
 app.layout = html.Div(
     [
@@ -122,7 +89,6 @@ app.layout = html.Div(
                 We really only do see the trend of higher fraction following higher measure for the green dots, which is Europe. 
                 In order to investigate the relationship in a slightly more robust and precise manner, we can try to model the problem. 
 
-
                 #### **Modelling relationship between energy and social/economic measures**
                 In order to model the relationship, we will make use of a model called partial least squares. 
                 In terms of specific variables, we will limit those representing energy to the fraction of reenewable energy, which was also mentioned earlier. 
@@ -137,23 +103,23 @@ app.layout = html.Div(
         html.Div(
             [
                 dcc.Dropdown(
-                    sorted(['Coal per capita (kWh)',
-                    'Fossil Fuels per capita (kWh)', 
-                    'Energy per capita (kWh)',
-                    'Low-carbon energy per capita (kWh)', 
-                    'Gas per capita (kWh)',
-                    'Nuclear per capita (kWh)', 
-                    'Oil per capita (kWh)',
-                    'Renewables per capita (kWh)', 
-                    'Wind per capita (kWh)',
-                    'Solar per capita (kWh)', 
-                    'Hydro per capita (kWh)']),
-                    "Coal per capita (kWh)",
+                    sorted([
+                        'Coal',
+                        'Fossil Fuels', 
+                        'Energy',
+                        'Low-carbon energy', 
+                        'Gas',
+                        'Nuclear', 
+                        'Oil',
+                        'Renewables', 
+                        'Wind',
+                        'Solar', 
+                        'Hydro']),
+                        "Coal per capita (kWh)",
                     id="world_energy_type_selection"
                 ),
                 html.Div([
                     dcc.Loading(dcc.Graph(id="world_map_energy_animation"), type="graph"),
-                    dcc.Loading(dcc.Graph(id="world_bar_energy_animation"), type="graph")
                 ], id="worldmap_graph__section")
             ],
             className="section__container",
@@ -288,7 +254,40 @@ app.layout = html.Div(
     className="content__container",
 )
 
+###-------------------DATA--------------------###
 
+###### JOINED DATASET
+world_df = pd.read_csv("data/pcc_energy_joined_country_codes.csv", index_col=0)
+
+###### SECOND SECTION DATA ######
+data_pcc_country = pd.read_csv(
+    "data/pcc_energy_extrapolated_5_country.csv", index_col=0
+)
+data_socio_country = pd.read_csv("data/socio_extrapolated_5_country.csv", index_col=0)
+
+data_pcc_country = data_pcc_country.set_index(["Entity", "Continent", "Year"])
+data_socio_country = data_socio_country.set_index(["Entity", "Continent", "Year"])
+
+df_social_energy = data_pcc_country.join(data_socio_country, how="outer").reset_index()
+df_social_energy = (
+    df_social_energy.sort_values(["Year", "Entity"]).reset_index().drop(columns="index")
+)
+df_social_energy["Fraction of Low-carbon energy per capita"] = (
+    df_social_energy["Low-carbon energy per capita (kWh)"]
+    / df_social_energy["Energy per capita (kWh)"]
+)
+df_social_energy = (
+    df_social_energy.sort_values(["Year", "Continent", "Entity"])
+    .reset_index()
+    .drop(columns="index")
+)
+
+###### THIRD SECTION DATA ######
+y_loadings = pd.read_csv("data/y_loadings_v.csv", index_col=0)
+loadings_v = pd.read_csv("data/loadings_v.csv", index_col=0)
+test_data = pd.read_csv("data/test_data.csv", index_col=0)
+
+###------------------- FUNCTIONS -------------------### 
 ###-------------- FIRST SECTION PLOTS --------------###
 world_df = pd.read_csv("data/pcc_energy_joined_country_codes.csv", index_col=0)
 world_bar_df = world_df.groupby("Year").sum().unstack().reset_index()
@@ -329,7 +328,7 @@ def display_animated_worldmap(energy_type):
     )
 
     world_animation.add_trace(bar_animation.data[0])
-    for i, frame in enumerate(world_animation.frames):
+    for i, _ in enumerate(world_animation.frames):
         world_animation.frames[i].data += (bar_animation.frames[i].data[0],)
 
     return world_animation
@@ -340,7 +339,7 @@ def display_animated_worldmap(energy_type):
     Output("graph_scatter", "figure"),
     [Input("dropdown", "value"), Input("checklist_social_energy_compare", "value")],
 )
-def update_graph(dropdown, values):
+def update_first_plot(dropdown, values):
     x = dropdown
     y = "Fraction of Low-carbon energy per capita"
     df_int = (
@@ -438,7 +437,7 @@ def update_graph(dropdown, values):
     Output("pls_components", "figure"),
     Input("dropdown2", "value"),
 )
-def update_graph(dropdown2):
+def update_third_graph(dropdown2):
     comp = dropdown2
     social_feats = pd.Series(loadings_v['Feature'][loadings_v['Continent'] == False]).unique()
     continents =  pd.Series(loadings_v['Feature'][loadings_v['Continent'] == True]).unique()
@@ -534,4 +533,4 @@ def update_graph(dropdown2):
 
 
 if __name__ == "__main__":
-    app.run_server(debug=True, port=8050, host="127.0.0.1")
+    app.run_server(debug=True, port="8050", host="127.0.0.1")

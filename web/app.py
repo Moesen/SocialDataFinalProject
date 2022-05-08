@@ -381,7 +381,7 @@ def update_graph(dropdown, values):
         type = "lowess"
         frac = 0.75
     else:
-        scope = None
+        scope = "trace"
         type = None
         frac = None
 
@@ -534,4 +534,4 @@ def update_graph(dropdown2):
 
 
 if __name__ == "__main__":
-    app.run_server(debug=True, port=8050, host="127.0.0.1")
+    app.run_server(debug=True, port="8050", host="127.0.0.1")

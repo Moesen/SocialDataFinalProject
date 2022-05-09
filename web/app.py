@@ -414,6 +414,7 @@ def update_graph(dropdown, values):
     fig1.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 200
     fig1.add_hline(y=1, line_width=1, line_dash="dash", line_color="gray")
     fig1.add_hline(y=0, line_width=1, line_dash="dash", line_color="gray")
+
     if ("  Trendline" not in values) & ("  Scatter" not in values):
         fig1.add_annotation(
             x=1 / 2 * (np.max(df_int[x]) * 1.1 - np.min(df_int[x])),
@@ -428,6 +429,7 @@ def update_graph(dropdown, values):
             showarrow=False,
             opacity=0.8,
         )
+
 
     return fig1
 

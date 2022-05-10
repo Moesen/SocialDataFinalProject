@@ -94,7 +94,13 @@ body {
     overflow: hidden;
 }
 
-p {
-	font-size: 1.5em;
+@media screen and (aspect-ratio: 16/9) {
+	p {
+		font-size: 1em;
+	}
 }
-
+@media screen and (aspect-ratio: 16/10) {
+	p {
+		font-size: 1.5em;
+	}
+}

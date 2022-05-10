@@ -525,7 +525,7 @@ def update_graph(dropdown2):
         category_orders={"Continent": [False, True]},
         labels={"x": ""},
         width=1200,
-        height=400,
+        height=500,
         facet_row_spacing=0.125,
         hover_name="Feature",
         hover_data={
@@ -546,43 +546,63 @@ def update_graph(dropdown2):
         xaxis3=dict(showticklabels=False),
     )
 
-    fig.update_layout(margin=dict(l=40, r=750, t=40, b=40))
+    fig.update_layout(margin=dict(l=40, r=825, t=40, b=40))
 
     fig.update_layout(legend=dict(yanchor="top", y=0.99, xanchor="left", x=1.05))
 
     if comp == 1:
-        anno_text = str(
-            f"         <b>PLS Component 1</b><br><br>"
-            + f"The correlation coefficient <br>with the target variable is: <b>{y_loadings.iloc[0,0]:.3f}"
-            + "</b><br><br>This PLS component seems to capture<br>"
-            + "the highly developed <b>European</b><br>"
-            + "countries... Etc.<br>"
-            + "Example: Iceland"
-        )
+        anno_text = str(f'<b>PLS Component 1</b><br><br>'+
+                    f'The correlation coefficient <br>with the target variable is: <b>{y_loadings.iloc[0,0]:.3f}' + 
+                    '</b><br><br>For the continents, we see that it<br>'+
+                    '<b>positively</b> correlates with <b>Europe</b>, while<br>'+ 
+                    'it <b>negatively</b> correlates with <b>Asia</b>. For<br>'+
+                    'the social/economic metrics, we see<br>'+
+                    'high <b>positive</b> loadings in measures<br>'+
+                    'related do <b>high development</b>, while we<br>'+
+                    'have <b>negative</b> correlation for <b>child<br>'+
+                    'mortality</b> and <b>population</b>. It seems like<br>'+
+                    'this component captures <b>European</b> countries<br>'+
+                    'that are <b>highly developed</b> and puts it in<br>'+
+                    'opposition to <b>Asian</b> countries. <br><br>'+
+                    'An example of such a country could be <br>'+
+                    '<b>Iceland.</b>')
+
     elif comp == 2:
-        anno_text = str(
-            f"         <b>PLS Component 2</b><br><br>"
-            + f"The correlation coefficient <br>with the target variable is: <b>{y_loadings.iloc[1,0]:.3f}"
-            + "</b><br><br>This PLS component seems to capture<br>"
-            + "the poorly developed <b>South</b><br>"
-            + "<b>American</b> countries. (weird).. Etc.<br>"
-            + "Example: Brazil"
-        )
+        anno_text = str(f'<b>PLS Component 2</b><br><br>'+
+                        f'The correlation coefficient <br>with the target variable is: <b>{y_loadings.iloc[1,0]:.3f}' + 
+                        '</b><br><br>Looking at the continents, we see that<br>'+
+                        'this component seems to represent <b>South<br>'+ 
+                        'American</b> countries, putting it in<br>'+
+                        'opposition to <b>Asia</b>. For the social/economic<br>'+
+                        'measures, we see something interesting.<br>'+
+                        'Despite the component correlating<br>'+
+                        '<b>positively</b> with the response, we have<br>'+
+                        '<b>negative</b> correlations for many of the<br>'+
+                        'measures. This seems to suggest that<br>'+
+                        'the <b>South American</b> can have a relatively<br>'+
+                        '<b>high fraction of renewables</b> despite<br>'+
+                        'scoring low in the social/economic domain.<br><br>'+
+                        'A good example of this situation is <b>Brazil</b>.')
+
     else:
-        anno_text = str(
-            f"         <b>PLS Component 3</b><br><br>"
-            + f"The correlation coefficient <br>with the target variable is: <b>{y_loadings.iloc[2,0]:.3f}"
-            + "</b><br><br>This PLS component seems to capture<br>"
-            + "the larger <b>Asian</b> countries. Etc<br>"
-            + "Example: China"
-        )
+        anno_text = str(f'<b>PLS Component 3</b><br><br>'+
+                        f'The correlation coefficient <br>with the target variable is: <b>{y_loadings.iloc[2,0]:.3f}' + 
+                        '</b><br><br>Here, it looks like the component<br>'+
+                        'are very <b>populous</b> and are <b>relatively,<br>'+
+                        'developed</b> while also somewhat<br>' +
+                        'representing <b>Oceania</b>. It also seems<br>'+
+                        'like <b>African</b> countries (in particular)<br>' +
+                        'in this component show the opposite <br>'+
+                        'trend than the <b>Asian</b> ones.<br><br>'+
+                        'An example of a country that fits <br>'+
+                        'this description is <b>China</b>.')
 
     fig.add_annotation(
         yanchor="top",
         xanchor="left",
         yref="paper",
         xref="paper",
-        x=1.95,
+        x=2.15,
         y=1,
         text=anno_text,
         font=dict(family="Courier New, monospace", size=16, color="Black"),

@@ -77,6 +77,12 @@ intro_plot = px.line(
     },
 )
 
+intro_plot.update_layout({
+    'plot_bgcolor': 'rgba(0, 0, 0, 0)',
+    'paper_bgcolor': 'rgba(0, 0, 0, 0)',
+    })
+
+
 app.layout = html.Div(
     [
         html.Header([
@@ -318,7 +324,7 @@ app.layout = html.Div(
             ],
             className="section__container",
         ),
-
+        html.Br(),
          dcc.Markdown(
              """
                 #### **From results to broader perspective**
@@ -405,6 +411,11 @@ def display_animated_worldmap(energy_type):
     world_animation_fig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 200
     world_animation_fig.update_geos(fitbounds="locations", visible=True)
     world_animation_fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
+
+    world_animation_fig.update_layout({
+    'plot_bgcolor': 'rgba(0, 0, 0, 0)',
+    'paper_bgcolor': 'rgba(0, 0, 0, 0)',
+    })
     return world_animation_fig
 
 
@@ -470,7 +481,7 @@ def update_graph(dropdown, values):
         size_max=size_max,
         range_x=[np.min(df_int[x]), np.max(df_int[x]) * 1.1],
         range_y=[-0.2, 1.2],
-        labels={y: "Fraction of Renewable Energy ", x: x},
+        labels={y: "Fraction of Renewables ", x: x},
         trendline_scope=scope,
         trendline=type,
         trendline_options=dict(frac=frac),
@@ -499,6 +510,12 @@ def update_graph(dropdown, values):
             opacity=0.8,
         )
 
+
+    fig1.update_layout({
+    'plot_bgcolor': 'rgba(0, 0, 0, 0)',
+    'paper_bgcolor': 'rgba(0, 0, 0, 0)',
+    })
+
     return fig1
 
 
@@ -522,104 +539,114 @@ def update_graph(dropdown2):
     for indx, i in enumerate(continents):
         colormap[i] = px.colors.qualitative.Antique[indx]
 
-    fig = px.bar(
-        loadings_v[loadings_v["PLS Component"] == comp],
-        x="x",
-        y="Loading",
-        color="Feature",
-        barmode="group",
-        facet_col="Continent",
-        facet_col_wrap=1,
-        color_discrete_map=colormap,
-        category_orders={"Continent": [False, True]},
-        labels={"x": ""},
-        width=1200,
-        height=500,
-        facet_row_spacing=0.125,
-        hover_name="Feature",
-        hover_data={
-            "Loading": True,
-            "Feature": False,
-            "Continent": False,
-            "x": False,
-            "PLS Component": False,
-        },
-    )
-
-    fig.update_yaxes(
-        tickvals=[-1.0, -0.8, -0.6, -0.4, -0.2, 0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
-    )
+    fig = px.bar(loadings_v[loadings_v['PLS Component'] == comp], x="x", y="Loading", color="Feature", barmode='group',
+             facet_col='Continent', facet_col_wrap=2, color_discrete_map=colormap,
+             category_orders={'Continent':[False, True]},
+             labels={'x':''},
+             width=900, height=600,
+             facet_row_spacing = 0.125,
+             hover_name="Feature",hover_data={"Loading": True,
+                                              "Feature": False,
+                                              "Continent": False,
+                                              "x":False,
+                                              "PLS Component":False})
+    fig.update_traces(width=0.8)
     fig.update_layout(
-        xaxis=dict(showticklabels=False),
-        xaxis2=dict(showticklabels=False),
-        xaxis3=dict(showticklabels=False),
+        xaxis = dict(
+            showticklabels=False
+        ),
+        xaxis2 = dict(
+            showticklabels=False
+        ),
+        xaxis3 = dict(
+            showticklabels=False
+        )
+    )
+    fig.update_layout(xaxis_range=[-1,8])
+    loads = loadings_v['Loading'][loadings_v['PLS Component'] == comp]
+    fig.update_layout(yaxis_range=[np.min([np.min(loads)*1.1,-0.1]),np.max(loads)*1.1])
+    fig.update_yaxes(
+            tickvals=[-1.0, -0.8, -0.6, -0.4, -0.2, 0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
+        )
+
+    fig.update_layout(
+        margin=dict(l=40, r=40, t=40, b=300)
     )
 
-    fig.update_layout(margin=dict(l=40, r=825, t=40, b=40))
-
-    fig.update_layout(legend=dict(yanchor="top", y=0.99, xanchor="left", x=1.05))
+    fig.update_layout(legend=dict(
+        yanchor="top",
+        y=0.99,
+        xanchor="left",
+        x=1.05
+    ))
 
     if comp == 1:
         anno_text = str(f'<b>PLS Component 1</b><br><br>'+
-                    f'The correlation coefficient <br>with the target variable is: <b>{y_loadings.iloc[0,0]:.3f}' + 
-                    '</b><br><br>For the continents, we see that it<br>'+
-                    '<b>positively</b> correlates with <b>Europe</b>, while<br>'+ 
-                    'it <b>negatively</b> correlates with <b>Asia</b>. For<br>'+
-                    'the social/economic metrics, we see<br>'+
-                    'high <b>positive</b> loadings in measures<br>'+
-                    'related do <b>high development</b>, while we<br>'+
-                    'have <b>negative</b> correlation for <b>child<br>'+
-                    'mortality</b> and <b>population</b>. It seems like<br>'+
-                    'this component captures <b>European</b> countries<br>'+
-                    'that are <b>highly developed</b> and puts it in<br>'+
-                    'opposition to <b>Asian</b> countries. <br><br>'+
-                    'An example of such a country could be <br>'+
-                    '<b>Iceland.</b>')
+                        f'The correlation coefficient with the target variable is: <b>{y_loadings.iloc[0,0]:.3f}' + 
+                        '</b><br><br>For the continents, we see that it '+
+                        '<b>positively</b> correlates with <b>Europe</b>, while<br>'+ 
+                        'it <b>negatively</b> correlates with <b>Asia</b>. For '+
+                        'the social/economic metrics, we see<br>'+
+                        'high <b>positive</b> loadings in measures '+
+                        'related do <b>high development</b>, while we<br>'+
+                        'have <b>negative</b> correlation for <b>child '+
+                        'mortality</b> and <b>population</b>. It seems like<br>'+
+                        'this component captures <b>European</b> countries '+
+                        'that are <b>highly developed</b> and puts it in<br>'+
+                        'opposition to <b>Asian</b> countries. <br><br>'+
+                        'An example of such a country could be '+
+                        '<b>Iceland.</b>')
 
     elif comp == 2:
         anno_text = str(f'<b>PLS Component 2</b><br><br>'+
-                        f'The correlation coefficient <br>with the target variable is: <b>{y_loadings.iloc[1,0]:.3f}' + 
-                        '</b><br><br>Looking at the continents, we see that<br>'+
+                        f'The correlation coefficient with the target variable is: <b>{y_loadings.iloc[1,0]:.3f}' + 
+                        '</b><br><br>Looking at the continents, we see that '+
                         'this component seems to represent <b>South<br>'+ 
-                        'American</b> countries, putting it in<br>'+
+                        'American</b> countries, putting it in '+
                         'opposition to <b>Asia</b>. For the social/economic<br>'+
-                        'measures, we see something interesting.<br>'+
+                        'measures, we see something interesting. '+
                         'Despite the component correlating<br>'+
-                        '<b>positively</b> with the response, we have<br>'+
+                        '<b>positively</b> with the response, we have '+
                         '<b>negative</b> correlations for many of the<br>'+
-                        'measures. This seems to suggest that<br>'+
+                        'measures. This seems to suggest that '+
                         'the <b>South American</b> can have a relatively<br>'+
-                        '<b>high fraction of renewables</b> despite<br>'+
+                        '<b>high fraction of renewables</b> despite '+
                         'scoring low in the social/economic domain.<br><br>'+
                         'A good example of this situation is <b>Brazil</b>.')
 
     else:
         anno_text = str(f'<b>PLS Component 3</b><br><br>'+
-                        f'The correlation coefficient <br>with the target variable is: <b>{y_loadings.iloc[2,0]:.3f}' + 
-                        '</b><br><br>Here, it looks like the component<br>'+
+                        f'The correlation coefficient with the target variable is: <b>{y_loadings.iloc[2,0]:.3f}' + 
+                        '</b><br><br>Here, it looks like the component '+
                         'are very <b>populous</b> and are <b>relatively,<br>'+
-                        'developed</b> while also somewhat<br>' +
+                        'developed</b> while also somewhat' +
                         'representing <b>Oceania</b>. It also seems<br>'+
-                        'like <b>African</b> countries (in particular)<br>' +
+                        'like <b>African</b> countries (in particular) ' +
                         'in this component show the opposite <br>'+
                         'trend than the <b>Asian</b> ones.<br><br>'+
-                        'An example of a country that fits <br>'+
+                        'An example of a country that fits '+
                         'this description is <b>China</b>.')
+
+                        
+                        
+                        
+                        
+                        
 
     fig.add_annotation(
         yanchor="top",
         xanchor="left",
-        yref="paper",
-        xref="paper",
-        x=2.15,
-        y=1,
+        yref = 'paper',
+        xref = 'paper',
+        x=0,
+        y=-0.15,
         text=anno_text,
         font=dict(family="Courier New, monospace", size=16, color="Black"),
         align="left",
-        bordercolor="Black",
+        bordercolor=None,
         borderwidth=1,
         borderpad=4,
-        bgcolor="#EBECF0",
+        bgcolor=None,#"#EBECF0",
         showarrow=False,
         opacity=0.8,
     )
@@ -632,6 +659,19 @@ def update_graph(dropdown2):
             text=a.text.replace("Continent=False", "<b>Social metrics</b>")
         )
     )
+
+    fig.update_layout(legend=dict(
+    orientation="h",
+    yanchor="bottom",
+    y=1.2,
+    xanchor="right",
+    x=1
+    ))
+
+    fig.update_layout({
+    'plot_bgcolor': 'rgba(0, 0, 0, 0)',
+    'paper_bgcolor': 'rgba(0, 0, 0, 0)',
+    })
 
     return fig
 

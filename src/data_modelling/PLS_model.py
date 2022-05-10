@@ -101,7 +101,8 @@ def train_model_and_save_loadings(in_path: str, out_path: str):
 
         loadings_v = loadings_v[loadings_v['PLS Component'] < n_comp]
         loadings_v['Continent'] = np.array(['Continent' in x for x in loadings_v['Feature']])
-        loadings_v['x'] = np.zeros(len(loadings_v['Feature']),)
+        loadings_v['x'] = np.array([0,0,0,1,1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6,7,7,7,
+                                    1,1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6])
         loadings_v['PLS Component'] = loadings_v['PLS Component']+1
 
         loadings_v_social = loadings_v.iloc[['Continent' not in x for x in loadings_v['Feature']],:]

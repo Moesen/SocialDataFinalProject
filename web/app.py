@@ -79,8 +79,16 @@ intro_plot = px.line(
 
 app.layout = html.Div(
     [
+        html.Header([
+            html.A("Introduction",  href="#Introduction"),
+		    html.A("Exploration",href="#Exploration"),
+		    html.A("Modelling",  href="#Modelling"),
+		    html.A("Discussion", href="#Discussion"),
+		    html.A("References", href="#References")
+        ]),
+        
         # -------- HEADER -------- #
-        html.Header(
+        html.Div(
             [
                 html.Div(
                     [
@@ -88,7 +96,6 @@ app.layout = html.Div(
                             """
                             # Energy Consumption and 
                             # Social/Economic Development
-                            ##### by Kelvin Foster, Nicolai Weisbjerg and Gustav Lang Moesmand
                             """
                         ),
                     ],
@@ -108,7 +115,7 @@ app.layout = html.Div(
                 The data is from Our World in Data from Oxford [[3]] and consists of yearly readings.
                 We see the continental trends, and the average of these, called global.
                 """,
-            className="section__container",
+            className="section__container", id="Introduction",
         ),
         dcc.Graph(figure=intro_plot),
         dcc.Markdown(
@@ -177,7 +184,7 @@ app.layout = html.Div(
                 - Navigate to *Child mortality rate*, turn on *Trendline*, and turn of *Continents*. This is not stricly related to our use-case, but it does put
                   you in a better mood knowing, that we see a clear postive trend here (and no, not in regards to fraction of renewables :)).
             """,
-                className="section__container",
+                className="section__container", id="Exploration",
             ),
         html.Br(),
         html.Div(
@@ -264,7 +271,7 @@ app.layout = html.Div(
                 Thus, if we for example see that the first component has a high loading for Oceania, then a "fictional" country that is similar to Oceanic countries will have a high fraction of renewable energy.
                 We can also extract how much a component in its entirety correlates with the response, and we can use this to gauge how well we ultimately model the problem.
             """,
-            className="section__container",
+            className="section__container", id="Modelling" 
         ),
         html.Br(),
         
@@ -327,7 +334,7 @@ app.layout = html.Div(
                 Nuance is very important and it is clear that there is no simple path ahead. 
 
             """,
-            className="section__container",
+            className="section__container", id="Discussion"
         ),
         # --------  -------- #
         # -------- Social data and energy type relationship -------- #
@@ -373,16 +380,19 @@ def display_animated_worldmap(energy_type):
     else:
         color_scale = ["green", "red"]
 
+    energy_type = energy_type + " per capita (kWh)" if energy_type != "Fraction of renewables" else energy_type
+    
     if energy_type == "Fraction of renewables":
         range_color = [0, 1]
     else:
-        [world_df[energy_type].quantile(.05), world_df[energy_type].quantile(0.95)],
+        range_color = [world_df[energy_type].quantile(.05), world_df[energy_type].quantile(0.95)]
 
-    energy_type = energy_type + " per capita (kWh)" if energy_type != "Fraction of renewables" else energy_type
     world_animation_fig = px.choropleth(
         world_df,
         locations="country_code",
         color=energy_type,
+        width=1200,
+        height=800,
         animation_frame="Year",
         hover_name="Entity",
         basemap_visible=True,

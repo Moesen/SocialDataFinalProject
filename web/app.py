@@ -68,7 +68,7 @@ intro_plot = px.line(
     x="Year",
     y="Fraction of Low-carbon energy per capita",
     color="Continent",
-    width=800,
+    #width="100%",
     height=500,
     title="Fraction of renewable energy across time",
     labels={
@@ -126,7 +126,7 @@ app.layout = html.Div(
                 """,
             className="section__container", id="Introduction",
         ),
-        dcc.Graph(figure=intro_plot),
+        dcc.Graph(figure=intro_plot, style={'width': '100%', 'height': '50vh'}),
         dcc.Markdown(
             """
                 As one might suspect, the trends vary greatly from continent to continent. We see that Europe is steadily increasing their fraction of renewable energy. 
@@ -163,7 +163,7 @@ app.layout = html.Div(
                     id="world_energy_type_selection"
                 ),
                 html.Div([
-                    dcc.Loading(dcc.Graph(id="world_map_energy_animation"), type="graph"),
+                    dcc.Loading(dcc.Graph(id="world_map_energy_animation", style={"height": "50vh", "width": "100%"}), type="graph"),
                 ], id="worldmap_graph__section")
             ],
             className="section__container",
@@ -178,6 +178,7 @@ app.layout = html.Div(
         html.Br(),
         dcc.Markdown(
             """   
+                -------------------------------------------------- 
                 #### **Exploring relationship between energy and social/economic measures**
                 We hypothesize that energy consumption is linked with measures of social and economic aspects at several levels. 
                 Additionally, we hypothesize that the causality of this relationship can be hard to determine. Still, we guess that higher social/economic measures eventually will lead to a more green energy profile for a country.
@@ -235,9 +236,9 @@ app.layout = html.Div(
                     ["  Continent", "  Scatter"],
                     inline=False,
                     id="checklist_social_energy_compare",
-                    labelStyle={"display": "block"},
+                    labelStyle={"margin": "10px"},
                 ),
-                html.Div([dcc.Loading(dcc.Graph(id="graph_scatter"), type="graph")]),
+                html.Div([dcc.Loading(dcc.Graph(id="graph_scatter", style={"width": "100%", "height": "50vh"}), type="graph")]),
             ],
             className="section__container",
         ),
@@ -262,6 +263,7 @@ app.layout = html.Div(
             html.Br(),
             dcc.Markdown(
                 """
+                -----------------------------------------------------------------------
                 #### **Modelling relationship between energy and social/economic measures**
                 To model the relationship, we will use a model called partial least squares. 
                 In terms of specific variables, we will limit those representing energy to the fraction of renewable energy mentioned earlier. 
@@ -321,13 +323,14 @@ app.layout = html.Div(
                         )
                     ]
                 ),
-                html.Div([dcc.Loading(dcc.Graph(id="pls_components"), type="graph")]),
+                html.Div([dcc.Loading(dcc.Graph(id="pls_components", style={"height": "50vh", "width": "100%"}), type="graph")]),
             ],
             className="section__container",
         ),
         html.Br(),
          dcc.Markdown(
              """
+                ----------------------------------------------------------------------------------------------------
                 #### **From results to broader perspective**
                 First of all, it is worth noting that the correlation coefficients between the components and the response are pretty low. 
                 However, in reality, whether or not a correlation should be deemed low naturally depends on the use case [[6]]. 
@@ -381,13 +384,13 @@ world_bar_df.columns = ["x", "Year", "y"]
 def display_animated_worldmap(energy_type):
     # Worldmap Figure
     if energy_type in ['Renewables', 'Wind','Solar', 'Hydro', "Low-carbon energy"]:
-        color_scale = ["red", "green"]
+        color_scale = ["#d2222d", "#ffbf00","#238823"]
     elif energy_type == "Energy":
-        color_scale = ["black", "yellow"]
+        color_scale = ["black", "#ffbf00"]
     elif energy_type == "Fraction of renewables":
-        color_scale = ["red", "green"]
+        color_scale = ["#d2222d", "#ffbf00", "#238823"]
     else:
-        color_scale = ["green", "red"]
+        color_scale = ["#238823","#ffbf00" "#d2222d"]
 
     energy_type = energy_type + " per capita (kWh)" if energy_type != "Fraction of renewables" else energy_type
     
@@ -400,23 +403,34 @@ def display_animated_worldmap(energy_type):
         world_df,
         locations="country_code",
         color=energy_type,
-        width=1200,
-        height=800,
+        #width=1200,
+        #height=800,
         animation_frame="Year",
         hover_name="Entity",
         basemap_visible=True,
         color_continuous_scale=color_scale,
-        range_color=range_color
+        range_color=range_color,
+        fitbounds=False,
+        center={"lon": 0, "lat": 0}
     )
 
     world_animation_fig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 200
-    world_animation_fig.update_geos(fitbounds="locations", visible=True)
+    world_animation_fig.update_geos(
+            fitbounds="locations", 
+            visible=True,
+            showocean=True,
+            oceancolor="#eee"
+            )
     world_animation_fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
+    world_animation_fig.update_traces(marker_line_width=0)
 
     world_animation_fig.update_layout({
-    'plot_bgcolor': 'rgba(0, 0, 0, 0)',
-    'paper_bgcolor': 'rgba(0, 0, 0, 0)',
-    })
+            'plot_bgcolor': 'rgba(0, 0, 0, 0)',
+            'paper_bgcolor': 'rgba(0, 0, 0, 0)',
+        }, 
+        geo=dict(bgcolor= 'rgba(0,0,0,0)')
+    )
+
     return world_animation_fig
 
 
@@ -501,7 +515,7 @@ def update_graph(dropdown, values):
             x=1 / 2 * (np.max(df_int[x]) * 1.1 + np.min(df_int[x])),
             y=0.5,
             text="Choose either Scatter or Trendline to show data",
-            font=dict(family="Courier New, monospace", size=16, color="Black"),
+            font=dict(family="Nunito Sans", size=16, color="Black"),
             align="center",
             bordercolor="Black",
             borderwidth=2,
@@ -544,7 +558,7 @@ def update_graph(dropdown2):
              facet_col='Continent', facet_col_wrap=4, color_discrete_map=colormap,
              category_orders={'Continent':[False, True]},
              labels={'x':''},
-             width=1000, height=700,
+             #width=1000, height=700,
              facet_col_spacing = 0.075,
              hover_name="Feature",hover_data={"Loading": True,
                                               "Feature": False,
@@ -641,11 +655,10 @@ def update_graph(dropdown2):
         xref = 'paper',
         x=0,
         y=-0.25,
-        text=anno_text,
-        font=dict(family="Courier New, monospace", size=16, color="Black"),
+        text=anno_text, 
+        font=dict(family="Nunito Sans", size=20, color="Black"),
         align="left",
-        bordercolor='Black',
-        borderwidth=0.5,
+        borderwidth=0.0,
         borderpad=4,
         bgcolor=None,#"#EBECF0",
         showarrow=False,

@@ -353,12 +353,12 @@ app.layout = html.Div(
             """
                 ------------
                 #### **References**              
-                1. [https://blog.ted.com/what-will-the-future-look-like-elon-musk-speaks-at-ted2017/](/)
-                1. [https://www.iea.org/news/renewable-electricity-growth-is-accelerating-faster-than-ever-worldwide-supporting-the-emergence-of-the-new-global-energy-economy](/)
-                1. [https://ourworldindata.org/](/)
-                1. [https://www.jstor.org/stable/2291207?seq=1](/): Paul H. Garthwaite , "An Interpretation of Partial Least Squares", Journal of the American Statistical Association, (1994)
-                1. [https://asset-pdf.scinapse.io/prod/2158863190/2158863190.pdf](/): Paul Geladi and Bruce R. Kowalski: "Partial Least-Squares Regression: A Tutorial", Analytica Chimica Acta, (1986)
-                1. [https://www.statology.org/what-is-a-strong-correlation/](/)
+                1. [blog.ted.com/what-will-the-future-look-like-elon-musk-speaks-at-ted2017/](https://blog.ted.com/what-will-the-future-look-like-elon-musk-speaks-at-ted2017/)
+                1. [iea.org/news/renewable-electricity-growth-is-accelerating-faster-than-ever-worldwide-supporting-the-emergence-of-the-new-global-energy-economy](https://www.iea.org/news/renewable-electricity-growth-is-accelerating-faster-than-ever-worldwide-supporting-the-emergence-of-the-new-global-energy-economy)
+                1. [ourworldindata.org/](https://ourworldindata.org/)
+                1. [jstor.org/stable/2291207?seq=1](https://www.jstor.org/stable/2291207?seq=1): Paul H. Garthwaite , "An Interpretation of Partial Least Squares", Journal of the American Statistical Association, (1994)
+                1. [asset-pdf.scinapse.io/prod/2158863190/2158863190.pdf](https://asset-pdf.scinapse.io/prod/2158863190/2158863190.pdf): Paul Geladi and Bruce R. Kowalski: "Partial Least-Squares Regression: A Tutorial", Analytica Chimica Acta, (1986)
+                1. [statology.org/what-is-a-strong-correlation/](https://www.statology.org/what-is-a-strong-correlation/)
             """,
             className="section__container", id="References",
         ),

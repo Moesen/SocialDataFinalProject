@@ -125,10 +125,36 @@ app.layout = html.Div(
                 This is essentially the same argument as "Why should we, the small country of Denmark, bother with climate change when our net contribution is negligible".
                 We will refrain from diving into this moral debate. 
                 In order to investigate the issue at an even deeper level, we can look at the patterns at a country level across time. 
-
-                INSERT MOESMAND FIGURE 
-
-
+            """,
+            className="section__container",
+        ),
+        html.Div(
+            [
+                dcc.Dropdown(
+                    sorted(['Coal',
+                    'Fossil Fuels', 
+                    'Fraction of renewables',
+                    'Energy',
+                    'Low-carbon energy', 
+                    'Gas',
+                    'Nuclear', 
+                    'Oil',
+                    'Renewables', 
+                    'Wind',
+                    'Solar', 
+                    'Hydro']),
+                    "Fraction of renewables",
+                    id="world_energy_type_selection"
+                ),
+                html.Div([
+                    dcc.Loading(dcc.Graph(id="world_map_energy_animation"), type="graph"),
+                ], id="worldmap_graph__section")
+            ],
+            className="section__container",
+            id="worldmap__section",
+        ),
+        dcc.Markdown(
+            """
                 At the end of the day, what we see is that there is quite large variety between countries when we measure their fraction of renewable energy. 
                 One posssible part of the explanation is differences in social and economic measures between countries. 
                 For the remainder of this article, we will delve deeper into this relationship between energy consumption and social/economic measures.   
@@ -209,30 +235,6 @@ app.layout = html.Div(
             className="section__container",
         ),
         # --------  -------- #
-        html.Div(
-            [
-                dcc.Dropdown(
-                    sorted(['Coal',
-                    'Fossil Fuels', 
-                    'Energy',
-                    'Low-carbon energy', 
-                    'Gas',
-                    'Nuclear', 
-                    'Oil',
-                    'Renewables', 
-                    'Wind',
-                    'Solar', 
-                    'Hydro']),
-                    "Coal",
-                    id="world_energy_type_selection"
-                ),
-                html.Div([
-                    dcc.Loading(dcc.Graph(id="world_map_energy_animation"), type="graph"),
-                ], id="worldmap_graph__section")
-            ],
-            className="section__container",
-            id="worldmap__section",
-        ),
         # -------- Social data and energy type relationship -------- #
         html.Br(),
         dcc.Markdown(
@@ -354,9 +356,10 @@ app.layout = html.Div(
 
 ###-------------- FIRST SECTION PLOTS --------------###
 world_df = pd.read_csv("data/pcc_energy_joined_country_codes.csv", index_col=0)
+world_df = world_df[world_df.Year < 2020]
+world_df["Fraction of renewables"] = world_df["Low-carbon energy per capita (kWh)"] / world_df["Energy per capita (kWh)"]
 world_bar_df = world_df.groupby("Year").sum().unstack().reset_index()
 world_bar_df.columns = ["x", "Year", "y"]
-
 
 @app.callback(
     Output("world_map_energy_animation", "figure"),
@@ -364,17 +367,34 @@ world_bar_df.columns = ["x", "Year", "y"]
 )
 def display_animated_worldmap(energy_type):
     # Worldmap Figure
-    energy_type = energy_type + " per capita (kWh)"
+    if energy_type in ['Renewables', 'Wind','Solar', 'Hydro', "Low-carbon energy"]:
+        color_scale = ["red", "green"]
+    elif energy_type == "Energy":
+        color_scale = ["black", "yellow"]
+    elif energy_type == "Fraction of renewables":
+        color_scale = ["red", "green"]
+    else:
+        color_scale = ["green", "red"]
+
+    if energy_type == "Fraction of renewables":
+        range_color = [0, 1]
+    else:
+        [world_df[energy_type].quantile(.05), world_df[energy_type].quantile(0.95)],
+
+    energy_type = energy_type + " per capita (kWh)" if energy_type != "Fraction of renewables" else energy_type
     world_animation_fig = px.choropleth(
         world_df,
         locations="country_code",
         color=energy_type,
         animation_frame="Year",
         hover_name="Entity",
-        color_continuous_scale=["#aaa", "green"],
-        range_color=[world_df[energy_type].min(), world_df[energy_type].max()],
+        basemap_visible=True,
+        color_continuous_scale=color_scale,
+        range_color=range_color
     )
-    world_animation_fig.update_geos(fitbounds="locations", visible=False)
+
+    world_animation_fig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 200
+    world_animation_fig.update_geos(fitbounds="locations", visible=True)
     world_animation_fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
     return world_animation_fig
 

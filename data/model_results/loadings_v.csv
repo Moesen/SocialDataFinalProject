@@ -1,0 +1,43 @@
+,Feature,PLS Component,Loading,Continent,x
+0,GDP per capita ($),1,0.2683040314270837,False,0
+1,GDP per capita ($),2,-0.38609692114291977,False,0
+2,GDP per capita ($),3,0.5413395914394863,False,0
+3,Child mortality rate (under 5 years - %),1,-0.36590667411419103,False,1
+4,Child mortality rate (under 5 years - %),2,0.23310621049222102,False,1
+5,Child mortality rate (under 5 years - %),3,0.2548492101154382,False,1
+6,Population,1,-0.1614009130771744,False,2
+7,Population,2,0.16106718654077676,False,2
+8,Population,3,0.46720428444441114,False,2
+9,HDI,1,0.4027047190034462,False,3
+10,HDI,2,-0.2677349655396321,False,3
+11,HDI,3,0.11872111109430859,False,3
+12,Life expectancy (years),1,0.34924517158854457,False,4
+13,Life expectancy (years),2,-0.20850646609709755,False,4
+14,Life expectancy (years),3,0.3671168809274744,False,4
+15,Tertiary education (%),1,0.35099536689522554,False,5
+16,Tertiary education (%),2,-0.014307139139245403,False,5
+17,Tertiary education (%),3,-0.20998799405092142,False,5
+18,Internet users (%),1,0.3324902850410516,False,6
+19,Internet users (%),2,-0.24121786748494423,False,6
+20,Internet users (%),3,0.3534311671305044,False,6
+21,Tax revenue of total GDP (%),1,0.34270879426794176,False,7
+22,Tax revenue of total GDP (%),2,0.17748575360925814,False,7
+23,Tax revenue of total GDP (%),3,-0.1460717809957146,False,7
+24,Africa,1,-0.098924409718157,True,1
+25,Africa,2,-0.024657110454978558,True,1
+26,Africa,3,-0.406049739562989,True,1
+27,Asia,1,-0.29553046746431344,True,2
+28,Asia,2,-0.4543726483155826,True,2
+29,Asia,3,0.35053875711202503,True,2
+30,Europe,1,0.30853534622144185,True,3
+31,Europe,2,0.1297245070697413,True,3
+32,Europe,3,-0.3197813539454701,True,3
+33,North America,1,-0.03045915399441608,True,4
+34,North America,2,-0.18926352776776814,True,4
+35,North America,3,0.02231565758676692,True,4
+36,Oceania,1,0.07270231352494419,True,5
+37,Oceania,2,-0.1040783383102306,True,5
+38,Oceania,3,0.2420200580210449,True,5
+39,South America,1,-0.01696812214836842,True,6
+40,South America,2,0.7126990272523839,True,6
+41,South America,3,0.06962770823537237,True,6

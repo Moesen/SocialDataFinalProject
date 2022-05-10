@@ -86,30 +86,30 @@ intro_plot.update_layout({
 app.layout = html.Div(
     [
         html.Header([
-            html.A("Introduction",  href="#Introduction"),
-		    html.A("Exploration",   href="#Exploration"),
-		    html.A("Modelling",     href="#Modelling"),
-		    html.A("Discussion",    href="#Discussion"),
-		    html.A("References",    href="#References")
+            html.A("Introduction", className="nav_elem",  href="#Introduction"),
+		    html.A("Exploration",  className="nav_elem",  href="#Exploration"),
+		    html.A("Modelling",    className="nav_elem",  href="#Modelling"),
+		    html.A("Discussion",   className="nav_elem",  href="#Discussion"),
+		    html.A("References",   className="nav_elem",  href="#References")
         ]),
         
         # -------- HEADER -------- #
         html.Div(
             [
                 html.Div(
-                    [
-                        dcc.Markdown(
-                            """
-                            # Energy Consumption and Social/Economic Development
-                            """
-                        , className="title"),
-                            html.Img(
-                                src=app.get_asset_url("—Pngtree—power grid_5405076.png"), 
-                                className="title_img")
-                    ],
-                    className="title__container",
-                )
-            ]
+                    """
+                    Energy Consumption and Social/Economic Development
+                    """
+                , className="title"),
+                html.Div([
+                    html.Span([
+                    html.Img(
+                        src=app.get_asset_url("—Pngtree—power grid_5405076.png"), 
+                        className="title_img")
+                        ],className="faded faded-left faded-bottom"),
+                    ], className="title_img_container"),
+            ],
+            className="title__container",
         ),
         # -------- DATASET Introduction -------- #
         dcc.Markdown(
@@ -359,7 +359,7 @@ app.layout = html.Div(
                 1. [https://asset-pdf.scinapse.io/prod/2158863190/2158863190.pdf](/): Paul Geladi and Bruce R. Kowalski: "Partial Least-Squares Regression: A Tutorial", Analytica Chimica Acta, (1986)
                 1. [https://www.statology.org/what-is-a-strong-correlation/](/)
             """,
-            className="section__container",
+            className="section__container", id="References",
         ),
     ],
     className="content__container",

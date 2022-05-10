@@ -2,4 +2,22 @@ header {
 	align-self: flex-end;	
 	margin-bottom: 50px;
 	margin-top: 50px;
+	display: flex;
+}
+
+.nav_elem {
+	margin: 0 5px;
+	text-decoration: none;
+	border-bottom: 2px solid #eee;
+}
+
+.nav_elem:hover {
+	transition-duration: .4s;
+	color: #203a43;
+	border-bottom-color: #203a43;
+}
+
+.nav_elem:first-child{
+	color: #2c5364;
+	border-bottom: 2px solid #2c5364;
 }

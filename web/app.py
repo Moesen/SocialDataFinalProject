@@ -2,9 +2,7 @@ import dash_bootstrap_components as dbc
 import pandas as pd
 import numpy as np
 import plotly.express as px
-import plotly.graph_objects as go
 from dash import Dash, Input, Output, dcc, html
-from matplotlib.pyplot import colorbar
 
 # Setup of app
 external_stylesheets = [dbc.themes.LUX]
@@ -137,23 +135,22 @@ app.layout = html.Div(
         html.Div(
             [
                 dcc.Dropdown(
-                    sorted(['Coal per capita (kWh)',
-                    'Fossil Fuels per capita (kWh)', 
-                    'Energy per capita (kWh)',
-                    'Low-carbon energy per capita (kWh)', 
-                    'Gas per capita (kWh)',
-                    'Nuclear per capita (kWh)', 
-                    'Oil per capita (kWh)',
-                    'Renewables per capita (kWh)', 
-                    'Wind per capita (kWh)',
-                    'Solar per capita (kWh)', 
-                    'Hydro per capita (kWh)']),
-                    "Coal per capita (kWh)",
+                    sorted(['Coal',
+                    'Fossil Fuels', 
+                    'Energy',
+                    'Low-carbon energy', 
+                    'Gas',
+                    'Nuclear', 
+                    'Oil',
+                    'Renewables', 
+                    'Wind',
+                    'Solar', 
+                    'Hydro']),
+                    "Coal",
                     id="world_energy_type_selection"
                 ),
                 html.Div([
                     dcc.Loading(dcc.Graph(id="world_map_energy_animation"), type="graph"),
-                    dcc.Loading(dcc.Graph(id="world_bar_energy_animation"), type="graph")
                 ], id="worldmap_graph__section")
             ],
             className="section__container",
@@ -209,12 +206,6 @@ app.layout = html.Div(
                 ),
                 html.Div([dcc.Loading(dcc.Graph(id="graph_scatter"), type="graph")]),
             ],
-            className="section__container",
-        ),
-        dcc.Markdown(
-            """
-        hehehehehehehehehehehehehehe
-        """,
             className="section__container",
         ),
         html.Br(),
@@ -301,7 +292,8 @@ world_bar_df.columns = ["x", "Year", "y"]
 )
 def display_animated_worldmap(energy_type):
     # Worldmap Figure
-    world_animation = px.choropleth(
+    energy_type = energy_type + " per capita (kWh)"
+    world_animation_fig = px.choropleth(
         world_df,
         locations="country_code",
         color=energy_type,
@@ -310,29 +302,9 @@ def display_animated_worldmap(energy_type):
         color_continuous_scale=["#aaa", "green"],
         range_color=[world_df[energy_type].min(), world_df[energy_type].max()],
     )
-
-    bar_animation = px.bar(
-        world_bar_df,
-        x="y",
-        y="x",
-        animation_frame="Year",
-        orientation="h",
-    )
-
-    bar_animation.update_layout(
-        margin={"t": 0, "l": 0, "r": 0, "b": 0},
-    )
-
-    world_animation.update_layout(
-        margin={"t": 0, "l": 0, "r": 0, "b": 0},
-        coloraxis_showscale=False,  # Removes colorbar
-    )
-
-    world_animation.add_trace(bar_animation.data[0])
-    for i, frame in enumerate(world_animation.frames):
-        world_animation.frames[i].data += (bar_animation.frames[i].data[0],)
-
-    return world_animation
+    world_animation_fig.update_geos(fitbounds="locations", visible=False)
+    world_animation_fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
+    return world_animation_fig
 
 
 ###-------------- SECOND SECTION PLOTS --------------###

@@ -111,29 +111,29 @@ app.layout = html.Div(
                 ---------------------------------
                 #### **Past, present and future of energy**
                 As the epitome of insightfulness Elon Musk once said: *"If you don't have sustainable energy, you have unsustainable energy."*[[1]]
-                Now, more than ever, the need to strive for a green future is essential, but the path is not at all simple or clear.
+                Now, more than ever, the need to strive for a green future is essential, but the path is not at all straightforward.
                 Fortunately, green energy sources are on the rise globally[[2]], but things are seldom as simple as they might seem. 
-                In the following figure, we see the relationship between the proportion of energy coming from renewable sources against time.
+                The following figure shows the relationship between the proportion of energy coming from renewable sources against time.
                 The data is from Our World in Data from Oxford [[3]] and consists of yearly readings.
-                We see the continental trends, and the average of these, called global.
+                We see the continental trends and the average of these, called global.
                 """,
             className="section__container", id="Introduction",
         ),
         dcc.Graph(figure=intro_plot),
         dcc.Markdown(
             """
-                As one might suspect, the trends vary greatly from continent to continent. We see that Europe is steadily increasing their fraction of reenewable energy. 
-                On the other hand, we see that Africa has in fact declined, which is a point is worth lingering on. 
-                For many countries (and especially those of Africa) recordings do not date back as far as, say, those of Europe. 
+                As one might suspect, the trends vary greatly from continent to continent. We see that Europe is steadily increasing their fraction of renewable energy. 
+                On the other hand, we see that Africa has declined, which is a point worth lingering on. 
+                For many countries (and especially those of Africa), recordings do not date back as far as those of Europe. 
                 Thus, as new countries enter the data, we might see sudden changes in the continental averages. 
-                From the graph, we also see that South America is doing a good job as measured by fraction of renewable energy. 
-                However, of the 6 populated continents, South America is second to last. 
-                As the name global warming suggests, the problem should, at the end of the day, be considered at a global level, which means that at the end of the day, the values for e.g. Asia are more important than those of South America. 
-                Asia is more populous than the remaining continents combined, and from the figure we see that their fraction has steadied of at somewhere between 0.05-0.06. 
+                The graph also shows that South America is doing an excellent job as measured by the fraction of renewable energy. 
+                However, South America is second to last of the six populated continents. 
+                As the name global warming suggests, the problem should be considered at a global level, which means that at the end of the day, the values for e.g. Asia are more important than those of South America. 
+                Asia is more populous than the remaining continents combined, and from the figure, we see that their fraction has steadied at somewhere between 0.05-0.06. 
                 In fact, Africa and Asia consists of roughly 76.74% of the world population and are far below the global fraction.
                 This is essentially the same argument as "Why should we, the small country of Denmark, bother with climate change when our net contribution is negligible".
                 We will refrain from diving into this moral debate. 
-                In order to investigate the issue at an even deeper level, we can look at the patterns at a country level across time. 
+                To investigate the issue at an even deeper level, we can look at the patterns at a country level across time. 
             """,
             className="section__container",
         ),
@@ -164,27 +164,27 @@ app.layout = html.Div(
         ),
         dcc.Markdown(
             """
-                At the end of the day, what we see is that there is quite large variety between countries when we measure their fraction of renewable energy. 
-                One posssible part of the explanation is differences in social and economic measures between countries. 
+                At the end of the day, we see quite a considerable variation between countries when measuring their fraction of renewable energy. 
+                One possible part of the explanation is differences in social and economic measures between countries. 
                 For the remainder of this article, we will delve deeper into this relationship between energy consumption and social/economic measures.   
             """),
         html.Br(),
         dcc.Markdown(
             """   
                 #### **Exploring relationship between energy and social/economic measures**
-                Our hypothesis is that energy consumption is linked with measures of social and enomic aspects at several levels. 
-                Additionally, we hypothesize that the causality of this relationship can be hard to determine, but our guess is that higher social/economic measures eventually will lead to a more green energy profile for a country.
-                Thus, when a country gets richer (both economically and socially), it will transition to haaving a larger fraction of renewable energy.
-                In order to investigate this hypothesis, we graph the fraction of renewable energy against a specific social/economic measure, and then let the data flow with time.
+                We hypothesize that energy consumption is linked with measures of social and economic aspects at several levels. 
+                Additionally, we hypothesize that the causality of this relationship can be hard to determine. Still, we guess that higher social/economic measures eventually will lead to a more green energy profile for a country.
+                Thus, when a country gets richer (both economically and socially), it will transition to having a more significant fraction of renewable energy.
+                To investigate this hypothesis, we graph the renewable energy fraction against a specific social/economic measure and then let the data flow with time.
                 Each point corresponds to a country.
 
                 ###### Some interesting use-cases, you can consider exploring:
-                - Turn of *Scatter* and turn on *Trendline*. Them browse through the different social measures. It seems like European countries
-                  are generally the only ones to follow our initial hypothesis, that higher developed countries consumes a larger fraction ofd renewables.
+                - Turn off *Scatter* and turn on *Trendline*. Then browse through the different social measures. It seems like European countries
+                  are generally the only ones to follow our initial hypothesis that higher developed countries consume a more significant fraction of renewables.
                 - Try highlighting only **South America**. Then navigate through the different social measures - do you see something odd? 
-                  (it seems like these countries reacts opposite to the social measures compared to what seems intuitive).
-                - Navigate to *Child mortality rate*, turn on *Trendline*, and turn of *Continents*. This is not stricly related to our use-case, but it does put
-                  you in a better mood knowing, that we see a clear postive trend here (and no, not in regards to fraction of renewables :)).
+                  (it seems like these countries react opposite to the social measures compared to what seems intuitive).
+                - Navigate to *Child mortality rate*, turn on *Trendline*, and turn off *Continents*. This is not strictly related to our use case. Still, it does put 
+                you in a better mood knowing that we see a clear positive trend here (and no, not regarding the fraction of renewables :)).
             """,
                 className="section__container", id="Exploration",
             ),
@@ -245,33 +245,33 @@ app.layout = html.Div(
 
             dcc.Markdown(
              """
-                For most measures, we first and foremost observe that said measure improves over time. 
+                We first and foremost observe that most measures improve over time. 
                 Taking HDI as an example, we very clearly see that almost all countries get a higher HDI over time, which in itself is a very positive and hopeful observation.
                 We do, however, not see as significant an improvement in the fraction of renewable energy.
-                We really only do see the trend of higher fraction following higher measure for the green dots, which is Europe. 
-                In order to investigate the relationship in a slightly more robust and precise manner, we can try to model the problem. 
+                We only see the trend of a higher fraction following a higher measure for the green dots, which is Europe. 
+                To investigate the relationship in a slightly more robust and precise manner, we can try to model the problem. 
             """
             ),
             html.Br(),
             dcc.Markdown(
                 """
                 #### **Modelling relationship between energy and social/economic measures**
-                In order to model the relationship, we will make use of a model called partial least squares. 
-                In terms of specific variables, we will limit those representing energy to the fraction of reenewable energy, which was also mentioned earlier. 
-                We will then investigate how social/economic measures relate to this variable, along with geographic information, here represented by continents. 
-                It is important to note that the model works by making projections, and it is therefore not directly interpretable in a strict sense. 
-                See e.g. [[4]] for further details on interpretability of the model.
-                In terms of the mathematical details, we will not delve in to them here in the article and instead focus on the results of the model.
+                To model the relationship, we will use a model called partial least squares. 
+                In terms of specific variables, we will limit those representing energy to the fraction of renewable energy mentioned earlier. 
+                We will then investigate how social/economic measures relate to this variable, along with geographic information represented by continents. 
+                It is important to note that the model works by making projections. Therefore, it is not directly interpretable in a strict sense. 
+                See e.g. [[4]] for further details on the interpretability of the model.
+                In terms of the mathematical details, we will not delve into them here in the article and instead focus on the model results.
                 Please refer to [[5]] for the mathematical details.  
 
-                When fitting the model, one can extract the so-called PLS components, which spans a latent/hidden representation of the data.
-                The components will tell us something about the underlying structure of the data, and will be a way to get some additional insight into the data that is not based purely on plotting.
-                We will look at the first 3 components as they tell us the most about the data. 
-                For each component, we have the loadings, which basically tell us how strongly the given feature correlates with our response, i.e. the fraction of renewable energy. 
-                We have split the features into social/economic measures and geographic information (continents), since we are interested in seeing if certain components might represent certain continents. 
+                When fitting the model, one can extract the so-called PLS components, which span the data's latent/hidden representation.
+                The components will tell us something about the underlying structure of the data. They will be a way to get some additional insight into the data that is not based purely on plotting.
+                We will look at the first three components as they tell us the most about the data. 
+                For each component, we have the loadings, which tell us how strongly the given feature correlates with our response, i.e. the fraction of renewable energy. 
+                We have split the features into social/economic measures and geographic information (continents), since we are interested in seeing if specific components might represent certain continents. 
                 Since we are looking at hidden structures in the data, we can think about the components as representing "fictional"/archetypical countries. 
-                Thus, if we for example see that the first component has a high loading for Oceania, then a "fictional" country that is similar to Oceanic countries will have a high fraction of renewable energy.
-                We can also extract how much a component in its entirety correlates with the response, and we can use this to gauge how well we ultimately model the problem.
+                Thus, if we, for example, see that the first component has a high loading for Oceania, then a "fictional" country similar to Oceanic countries will have a high fraction of renewable energy.
+                We can also extract how much a component in its entirety correlates with the response. We can use this to gauge how well we ultimately model the problem.
             """,
             className="section__container", id="Modelling" 
         ),
@@ -322,18 +322,18 @@ app.layout = html.Div(
          dcc.Markdown(
              """
                 #### **From results to broader perspective**
-                First of all, it is worth noting that the correlation coefficients between the components and the response are quite low. 
-                However, in reality, whether or not a correlation should be deemed low naturally depends on the use-case[[6]]. 
-                The PLS model itself is probably not ideal since it does not model time-dependencies. 
-                Apart from the shortcomings of the model itself, the data that we feed into the model is most likely not optimal either.
-                There are probably a lot of other signals that would be nice to include in order to fully account for the variation in the data. 
-                It is also clear from the analysis that there is a great amount of variation between countries, which ties back to the point about data:
+                First of all, it is worth noting that the correlation coefficients between the components and the response are pretty low. 
+                However, in reality, whether or not a correlation should be deemed low naturally depends on the use case [[6]]. 
+                The PLS model itself is probably not ideal since it does not model time dependencies. 
+                Apart from the model's shortcomings, the data that we feed into the model is most likely not optimal either.
+                There are probably a lot of other signals that would be nice to include to fully account for the variation in the data. 
+                It is also clear from the analysis that there is a significant amount of variation between countries, which ties back to the point about data:
                 It is hard to adequately represent the specific circumstances that a country finds itself in from data alone.
-                For example, Brazil does not have high scores in the social/economic domain, but nevertheless have a large fraction of renewables, which goes against our initial hypothesis.
-                It really only does seem like Europe represents the trend that we expected, namely that higher measures of social/economic development leads to a more green energy profile.
+                For example, Brazil does not have high scores in the social/economic domain but has a large fraction of renewables, which goes against our initial hypothesis.
+                It only does seem like Europe represents the trend that we expected, namely that higher measures of social/economic development lead to a more green energy profile.
                 At some level, this shows that our approach is somewhat oversimplistic. 
-                This in turn shows that one should be careful making sweeping generalizations about the nature of how countries act in relation to a green transition. 
-                Nuance is very important and it is clear that there is no simple path ahead. 
+                This, in turn, shows that one should be careful making sweeping generalizations about how countries act concerning a green transition. 
+                Nuance is critical, and it is clear that there is no simple path ahead. 
 
             """,
             className="section__container", id="Discussion"

@@ -10,10 +10,6 @@
     width: 100%;
 }
 
-#worldmap__section {
-    border: 1px solid black;
-}
-
 #world_energy_type_selection {
     width: 20%;
 }
@@ -30,4 +26,5 @@
     display: flex;
     box-sizing: border-box;
     overflow: hidden;
+    height: 500px;
 }

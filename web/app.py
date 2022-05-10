@@ -326,8 +326,11 @@ app.layout = html.Div(
                 html.Div(
                     [
                         dcc.Loading(dcc.Graph(id="pls_components", style={"height": "50vh", "width": "100%"}), type="graph"),
-                        dcc.Markdown(id="pls_annotation"), 
                     ],),
+                html.Div(id="pls_annotation", 
+                        #style={"border-width":"1px","border-style":"dashed","border-color":"black",
+                        #"padding-top": "3px", "padding-bottom": "3px", "padding-right": "3px", "padding-left": "3px"})
+                        style={"font-style": "italic"})
             ],
             className="section__container",
         ),
@@ -590,7 +593,7 @@ def update_graph(dropdown2):
         )
 
     fig.update_layout(
-        margin=dict(l=40, r=40, t=40, b=350)
+        margin=dict(l=40, r=40, t=40, b=40)
     )
 
     fig.update_layout(legend=dict(
@@ -601,51 +604,40 @@ def update_graph(dropdown2):
     ))
 
     if comp == 1:
-        anno_text =     f'''##PLS Component 1
-                        The correlation coefficient with the target variable is: **{y_loadings.iloc[0,0]:.3f}  
-                        **<br><br>For the continents, we see that it 
-                        **positively** correlates with **Europe**, while<br>
-                        it **negatively** correlates with **Asia**. For 
-                        the social/economic metrics, we see<br>
-                        high **positive** loadings in measures 
-                        related do **high development**, while we<br>
-                        have **negative** correlation for **child 
-                        mortality** and **population**. It seems like<br>
-                        this component captures **European** countries 
-                        that are **highly developed** and puts it in<br>
-                        opposition to **Asian** countries. <br><br>
-                        An example of such a country could be 
-                        **Iceland.**'''
+        anno_text =   f"""The correlation coefficient with the target variable for this component is: {y_loadings.iloc[0,0]:.3f}.
+                        For the continents, we see that it positively correlates with Europe, while it negatively correlates with Asia. 
+                        For the social/economic metrics, we see high positive loadings in measures related do high development, 
+                        while we have negative correlation for childmortality and population. It seems like this component 
+                        captures European countries that are highly developed and puts it in opposition to Asian countries.  
+                        An example of such a country could be Iceland."""
 
     elif comp == 2:
-        anno_text = str(f'<b>PLS Component 2</b><br><br>'+
-                        f'The correlation coefficient with the target variable is: <b>{y_loadings.iloc[1,0]:.3f}' + 
-                        '</b><br><br>Looking at the continents, we see that '+
-                        'this component seems to represent <b>South<br>'+ 
-                        'American</b> countries, putting it in '+
-                        'opposition to <b>Asia</b>. For the social/economic<br>'+
-                        'measures, we see something interesting. '+
-                        'Despite the component correlating<br>'+
-                        '<b>positively</b> with the response, we have '+
-                        '<b>negative</b> correlations for many of the<br>'+
-                        'measures. This seems to suggest that '+
-                        'the <b>South American</b> can have a relatively<br>'+
-                        '<b>high fraction of renewables</b> despite '+
-                        'scoring low in the social/economic domain.<br><br>'+
-                        'A good example of this situation is <b>Brazil</b>.')
+        anno_text =    f"""The correlation coefficient with the target variable for this component is: {y_loadings.iloc[1,0]:.3f}.
+                        Looking at the continents, we see that 
+                        this component seems to represent South 
+                        American countries, putting it in 
+                        opposition to Asia. For the social/economic 
+                        measures, we see something interesting. 
+                        Despite the component correlating 
+                        positively with the response, we have 
+                        negative correlations for many of the 
+                        measures. This seems to suggest that 
+                        the South American can have a relatively 
+                        high fraction of renewables despite 
+                        scoring low in the social/economic domain. 
+                        A good example of this situation is Brazil."""
 
     else:
-        anno_text = str(f'<b>PLS Component 3</b><br><br>'+
-                        f'The correlation coefficient with the target variable is: <b>{y_loadings.iloc[2,0]:.3f}' + 
-                        '</b><br><br>Here, it looks like the component '+
-                        'are very <b>populous</b> and are <b>relatively,<br>'+
-                        'developed</b> while also somewhat' +
-                        'representing <b>Oceania</b>. It also seems<br>'+
-                        'like <b>African</b> countries (in particular) ' +
-                        'in this component show the opposite <br>'+
-                        'trend than the <b>Asian</b> ones.<br><br>'+
-                        'An example of a country that fits '+
-                        'this description is <b>China</b>.')
+        anno_text =     f"""The correlation coefficient with the target variable for this component is: {y_loadings.iloc[2,0]:.3f}.
+                        Here, it looks like the component 
+                        are very populous and are relatively, 
+                        developed while also somewhat 
+                        representing Oceania. It also seems 
+                        like African countries (in particular) 
+                        in this component show the opposite 
+                        trend than the Asian ones. 
+                        An example of a country that fits 
+                        this description is China."""
 
                         
                         

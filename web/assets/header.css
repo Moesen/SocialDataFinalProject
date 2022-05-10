@@ -2,4 +2,14 @@ header {
 	align-self: flex-end;	
 	margin-bottom: 50px;
 	margin-top: 50px;
+	display: flex;
+}
+
+header a {
+	margin: 0 5px;
+	text-decoration: none;
+}
+
+header:first-child {
+	color: red;
 }

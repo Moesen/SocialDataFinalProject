@@ -97,19 +97,19 @@ app.layout = html.Div(
         html.Div(
             [
                 html.Div(
-                    [
-                        dcc.Markdown(
-                            """
-                            # Energy Consumption and Social/Economic Development
-                            """
-                        , className="title"),
-                            html.Img(
-                                src=app.get_asset_url("—Pngtree—power grid_5405076.png"), 
-                                className="title_img")
-                    ],
-                    className="title__container",
-                )
-            ]
+                    """
+                    Energy Consumption and Social/Economic Development
+                    """
+                , className="title"),
+                html.Div([
+                    html.Span([
+                    html.Img(
+                        src=app.get_asset_url("—Pngtree—power grid_5405076.png"), 
+                        className="title_img")
+                        ],className="faded faded-left faded-bottom"),
+                    ], className="title_img_container"),
+            ],
+            className="title__container",
         ),
         # -------- DATASET Introduction -------- #
         dcc.Markdown(
@@ -359,7 +359,7 @@ app.layout = html.Div(
                 1. [https://asset-pdf.scinapse.io/prod/2158863190/2158863190.pdf](/): Paul Geladi and Bruce R. Kowalski: "Partial Least-Squares Regression: A Tutorial", Analytica Chimica Acta, (1986)
                 1. [https://www.statology.org/what-is-a-strong-correlation/](/)
             """,
-            className="section__container",
+            className="section__container", id="References",
         ),
     ],
     className="content__container",

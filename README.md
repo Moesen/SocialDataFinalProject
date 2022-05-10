@@ -3,5 +3,6 @@
 ## Path to final notebook
 "/notebooks/final_notebook.ipynb"
 
-## Link to homepaage
+## Link to homepage
+https://social-data-project.herokuapp.com/
 

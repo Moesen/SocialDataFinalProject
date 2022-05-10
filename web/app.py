@@ -90,7 +90,8 @@ app.layout = html.Div(
 		    html.A("Exploration",  className="nav_elem",  href="#Exploration"),
 		    html.A("Modelling",    className="nav_elem",  href="#Modelling"),
 		    html.A("Discussion",   className="nav_elem",  href="#Discussion"),
-		    html.A("References",   className="nav_elem",  href="#References")
+		    html.A("References",   className="nav_elem",  href="#References"),
+		    html.A(html.Img(src=app.get_asset_url("icons/GitHub-Mark-120px-plus.png"), className="github_logo"),   className="nav_elem",  target="_blank", href="http://github.com/moesen/SocialDataFinalProject")
         ]),
         
         # -------- HEADER -------- #
@@ -104,9 +105,9 @@ app.layout = html.Div(
                 html.Div([
                     html.Span([
                     html.Img(
-                        src=app.get_asset_url("—Pngtree—power grid_5405076.png"), 
+                        src=app.get_asset_url("pngegg.png"), 
                         className="title_img")
-                        ],className="faded faded-left faded-bottom"),
+                        ],),#className="faded faded-left faded-bottom"),
                     ], className="title_img_container"),
             ],
             className="title__container",

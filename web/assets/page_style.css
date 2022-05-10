@@ -30,7 +30,7 @@ body {
 .title__container {
 	align-self: center;
 	justify-self: center;
-	width: 90%;
+	width: 100%;
 	font-family: "Poppins";	
 	font-size: 3rem;
 	display: flex;
@@ -38,8 +38,9 @@ body {
 }
 
 .title {
-	font-size: 3vw;
+	font-size: 2.6vw;
 	color: #111;
+	width: 55%; 
 }
 
 .faded {
@@ -68,9 +69,8 @@ body {
 }
 .title_img_container {
 	flex-grow: 1;
-	width: 50%;
+	width: 45%;
 }
-
 
 .section__container {
     width: 100%;

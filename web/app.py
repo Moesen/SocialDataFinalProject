@@ -540,11 +540,11 @@ def update_graph(dropdown2):
         colormap[i] = px.colors.qualitative.Antique[indx]
 
     fig = px.bar(loadings_v[loadings_v['PLS Component'] == comp], x="x", y="Loading", color="Feature", barmode='group',
-             facet_col='Continent', facet_col_wrap=2, color_discrete_map=colormap,
+             facet_col='Continent', facet_col_wrap=4, color_discrete_map=colormap,
              category_orders={'Continent':[False, True]},
              labels={'x':''},
-             width=900, height=600,
-             facet_row_spacing = 0.125,
+             width=1000, height=700,
+             facet_col_spacing = 0.075,
              hover_name="Feature",hover_data={"Loading": True,
                                               "Feature": False,
                                               "Continent": False,
@@ -570,7 +570,7 @@ def update_graph(dropdown2):
         )
 
     fig.update_layout(
-        margin=dict(l=40, r=40, t=40, b=300)
+        margin=dict(l=40, r=40, t=40, b=350)
     )
 
     fig.update_layout(legend=dict(
@@ -639,12 +639,12 @@ def update_graph(dropdown2):
         yref = 'paper',
         xref = 'paper',
         x=0,
-        y=-0.15,
+        y=-0.25,
         text=anno_text,
         font=dict(family="Courier New, monospace", size=16, color="Black"),
         align="left",
-        bordercolor=None,
-        borderwidth=1,
+        bordercolor='Black',
+        borderwidth=0.5,
         borderpad=4,
         bgcolor=None,#"#EBECF0",
         showarrow=False,
@@ -663,7 +663,7 @@ def update_graph(dropdown2):
     fig.update_layout(legend=dict(
     orientation="h",
     yanchor="bottom",
-    y=1.2,
+    y=1.3,
     xanchor="right",
     x=1
     ))

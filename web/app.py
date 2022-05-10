@@ -158,17 +158,28 @@ app.layout = html.Div(
                 At the end of the day, what we see is that there is quite large variety between countries when we measure their fraction of renewable energy. 
                 One posssible part of the explanation is differences in social and economic measures between countries. 
                 For the remainder of this article, we will delve deeper into this relationship between energy consumption and social/economic measures.   
-                
+            """),
+        html.Br(),
+        dcc.Markdown(
+            """   
                 #### **Exploring relationship between energy and social/economic measures**
                 Our hypothesis is that energy consumption is linked with measures of social and enomic aspects at several levels. 
                 Additionally, we hypothesize that the causality of this relationship can be hard to determine, but our guess is that higher social/economic measures eventually will lead to a more green energy profile for a country.
                 Thus, when a country gets richer (both economically and socially), it will transition to haaving a larger fraction of renewable energy.
                 In order to investigate this hypothesis, we graph the fraction of renewable energy against a specific social/economic measure, and then let the data flow with time.
-                Each point corresponds to a country. 
+                Each point corresponds to a country.
+
+                ###### Some interesting use-cases, you can consider exploring:
+                - Turn of *Scatter* and turn on *Trendline*. Them browse through the different social measures. It seems like European countries
+                  are generally the only ones to follow our initial hypothesis, that higher developed countries consumes a larger fraction ofd renewables.
+                - Try highlighting only **South America**. Then navigate through the different social measures - do you see something odd? 
+                  (it seems like these countries reacts opposite to the social measures compared to what seems intuitive).
+                - Navigate to *Child mortality rate*, turn on *Trendline*, and turn of *Continents*. This is not stricly related to our use-case, but it does put
+                  you in a better mood knowing, that we see a clear postive trend here (and no, not in regards to fraction of renewables :)).
             """,
                 className="section__container",
             ),
-             html.Br(),
+        html.Br(),
         html.Div(
             [
                 dbc.Row(
@@ -214,6 +225,12 @@ app.layout = html.Div(
             ],
             className="section__container",
         ),
+        dcc.Markdown(
+            """
+                (*To remove data from a continent, press the continent in the legend. To highlight only one continent, double-tap the continent in the legend.*)
+            """,
+            className="section__container",
+            ),
 
 
 
@@ -224,8 +241,11 @@ app.layout = html.Div(
                 We do, however, not see as significant an improvement in the fraction of renewable energy.
                 We really only do see the trend of higher fraction following higher measure for the green dots, which is Europe. 
                 In order to investigate the relationship in a slightly more robust and precise manner, we can try to model the problem. 
-
-
+            """
+            ),
+            html.Br(),
+            dcc.Markdown(
+                """
                 #### **Modelling relationship between energy and social/economic measures**
                 In order to model the relationship, we will make use of a model called partial least squares. 
                 In terms of specific variables, we will limit those representing energy to the fraction of reenewable energy, which was also mentioned earlier. 
@@ -454,7 +474,7 @@ def update_graph(dropdown, values):
 
     if ("  Trendline" not in values) & ("  Scatter" not in values):
         fig1.add_annotation(
-            x=1 / 2 * (np.max(df_int[x]) * 1.1 - np.min(df_int[x])),
+            x=1 / 2 * (np.max(df_int[x]) * 1.1 + np.min(df_int[x])),
             y=0.5,
             text="Choose either Scatter or Trendline to show data",
             font=dict(family="Courier New, monospace", size=16, color="Black"),

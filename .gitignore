@@ -2,6 +2,5 @@
 .ds_store
 .DS_STORE
 
-/data
 **/*.icloud
 *.icloud

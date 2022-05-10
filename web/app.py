@@ -86,11 +86,11 @@ intro_plot.update_layout({
 app.layout = html.Div(
     [
         html.Header([
-            html.A("Introduction",  href="#Introduction"),
-		    html.A("Exploration",   href="#Exploration"),
-		    html.A("Modelling",     href="#Modelling"),
-		    html.A("Discussion",    href="#Discussion"),
-		    html.A("References",    href="#References")
+            html.A("Introduction", className="nav_elem",  href="#Introduction"),
+		    html.A("Exploration",  className="nav_elem",  href="#Exploration"),
+		    html.A("Modelling",    className="nav_elem",  href="#Modelling"),
+		    html.A("Discussion",   className="nav_elem",  href="#Discussion"),
+		    html.A("References",   className="nav_elem",  href="#References")
         ]),
         
         # -------- HEADER -------- #

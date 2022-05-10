@@ -81,10 +81,10 @@ app.layout = html.Div(
     [
         html.Header([
             html.A("Introduction",  href="#Introduction"),
-		    html.A("Exploration",href="#Exploration"),
-		    html.A("Modelling",  href="#Modelling"),
-		    html.A("Discussion", href="#Discussion"),
-		    html.A("References", href="#References")
+		    html.A("Exploration",   href="#Exploration"),
+		    html.A("Modelling",     href="#Modelling"),
+		    html.A("Discussion",    href="#Discussion"),
+		    html.A("References",    href="#References")
         ]),
         
         # -------- HEADER -------- #
@@ -94,12 +94,14 @@ app.layout = html.Div(
                     [
                         dcc.Markdown(
                             """
-                            # Energy Consumption and 
-                            # Social/Economic Development
+                            # Energy Consumption and Social/Economic Development
                             """
-                        ),
+                        , className="title"),
+                            html.Img(
+                                src=app.get_asset_url("—Pngtree—power grid_5405076.png"), 
+                                className="title_img")
                     ],
-                    className="header__container",
+                    className="title__container",
                 )
             ]
         ),

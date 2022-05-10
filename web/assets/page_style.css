@@ -1,10 +1,39 @@
+@font-face {
+	font-family: "Poppins";
+	src: url("fonts/Poppins-SemiBold.ttf") format("truetype");
+}
+
 /* --------- MIDDLE CONTAINER SHOWING CONTENT --------- */
+body {
+	background-color: #e2e6eb;
+}
+
+.title__container {
+	width: 100%;
+	font-family: "Poppins";	
+	font-size: 3rem;
+	color: red;
+	display: flex;
+	align-items: center;
+}
+
+.title {
+	width: 50%;
+}
+
+.title_img {
+	width: 50%;
+}
+
 .content__container {
     display: flex;
     align-items: center;
     flex-direction: column;
     margin: 0 auto;
+    width: 90vw;
 }
+
+
 
 .section__container {
     width: 100%;

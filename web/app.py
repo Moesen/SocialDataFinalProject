@@ -606,8 +606,8 @@ def update_graph(dropdown2):
     if comp == 1:
         anno_text =   f"""The correlation coefficient with the target variable for this component is: {y_loadings.iloc[0,0]:.3f}.
                         For the continents, we see that it positively correlates with Europe, while it negatively correlates with Asia. 
-                        For the social/economic metrics, we see high positive loadings in measures related do high development, 
-                        while we have negative correlation for childmortality and population. It seems like this component 
+                        For the social/economic metrics, we see high positive loadings in measures related to high development, 
+                        while we have negative correlation for child mortality and population. It seems like this component 
                         captures European countries that are highly developed and puts it in opposition to Asian countries.  
                         An example of such a country could be Iceland."""
 

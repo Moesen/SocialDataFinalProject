@@ -323,7 +323,11 @@ app.layout = html.Div(
                         )
                     ]
                 ),
-                html.Div([dcc.Loading(dcc.Graph(id="pls_components", style={"height": "50vh", "width": "100%"}), type="graph")]),
+                html.Div(
+                    [
+                        dcc.Loading(dcc.Graph(id="pls_components", style={"height": "50vh", "width": "100%"}), type="graph"),
+                        dcc.Markdown(id="pls_annotation"), 
+                    ],),
             ],
             className="section__container",
         ),
@@ -537,6 +541,7 @@ def update_graph(dropdown, values):
 ###-------------- THIRD SECTION PLOTS --------------###
 @app.callback(
     Output("pls_components", "figure"),
+    Output("pls_annotation", "children"),
     Input("dropdown2", "value"),
 )
 def update_graph(dropdown2):
@@ -596,21 +601,21 @@ def update_graph(dropdown2):
     ))
 
     if comp == 1:
-        anno_text = str(f'<b>PLS Component 1</b><br><br>'+
-                        f'The correlation coefficient with the target variable is: <b>{y_loadings.iloc[0,0]:.3f}' + 
-                        '</b><br><br>For the continents, we see that it '+
-                        '<b>positively</b> correlates with <b>Europe</b>, while<br>'+ 
-                        'it <b>negatively</b> correlates with <b>Asia</b>. For '+
-                        'the social/economic metrics, we see<br>'+
-                        'high <b>positive</b> loadings in measures '+
-                        'related do <b>high development</b>, while we<br>'+
-                        'have <b>negative</b> correlation for <b>child '+
-                        'mortality</b> and <b>population</b>. It seems like<br>'+
-                        'this component captures <b>European</b> countries '+
-                        'that are <b>highly developed</b> and puts it in<br>'+
-                        'opposition to <b>Asian</b> countries. <br><br>'+
-                        'An example of such a country could be '+
-                        '<b>Iceland.</b>')
+        anno_text =     f'''##PLS Component 1
+                        The correlation coefficient with the target variable is: **{y_loadings.iloc[0,0]:.3f}  
+                        **<br><br>For the continents, we see that it 
+                        **positively** correlates with **Europe**, while<br>
+                        it **negatively** correlates with **Asia**. For 
+                        the social/economic metrics, we see<br>
+                        high **positive** loadings in measures 
+                        related do **high development**, while we<br>
+                        have **negative** correlation for **child 
+                        mortality** and **population**. It seems like<br>
+                        this component captures **European** countries 
+                        that are **highly developed** and puts it in<br>
+                        opposition to **Asian** countries. <br><br>
+                        An example of such a country could be 
+                        **Iceland.**'''
 
     elif comp == 2:
         anno_text = str(f'<b>PLS Component 2</b><br><br>'+
@@ -648,22 +653,22 @@ def update_graph(dropdown2):
                         
                         
 
-    fig.add_annotation(
-        yanchor="top",
-        xanchor="left",
-        yref = 'paper',
-        xref = 'paper',
-        x=0,
-        y=-0.25,
-        text=anno_text, 
-        font=dict(family="Nunito Sans", size=20, color="Black"),
-        align="left",
-        borderwidth=0.0,
-        borderpad=4,
-        bgcolor=None,#"#EBECF0",
-        showarrow=False,
-        opacity=0.8,
-    )
+#    fig.add_annotation(
+#        yanchor="top",
+#        xanchor="left",
+#        yref = 'paper',
+#        xref = 'paper',
+#        x=0,
+#        y=-0.25,
+#        text=anno_text, 
+#        font=dict(family="Nunito Sans", size=20, color="Black"),
+#        align="left",
+#        borderwidth=0.0,
+#        borderpad=4,
+#        bgcolor=None,#"#EBECF0",
+#        showarrow=False,
+#        opacity=0.8,
+#    )
 
     fig.for_each_annotation(
         lambda a: a.update(text=a.text.replace("Continent=True", "<b>Continents</b>"))
@@ -687,7 +692,7 @@ def update_graph(dropdown2):
     'paper_bgcolor': 'rgba(0, 0, 0, 0)',
     })
 
-    return fig
+    return fig, anno_text
 
 
 if __name__ == "__main__":

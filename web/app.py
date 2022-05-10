@@ -79,8 +79,16 @@ intro_plot = px.line(
 
 app.layout = html.Div(
     [
+        html.Header([
+            html.A("Introduction",  href="#Introduction"),
+		    html.A("Exploration",href="#Exploration"),
+		    html.A("Modelling",  href="#Modelling"),
+		    html.A("Discussion", href="#Discussion"),
+		    html.A("References", href="#References")
+        ]),
+        
         # -------- HEADER -------- #
-        html.Header(
+        html.Div(
             [
                 html.Div(
                     [
@@ -88,7 +96,6 @@ app.layout = html.Div(
                             """
                             # Energy Consumption and 
                             # Social/Economic Development
-                            ##### by Kelvin Foster, Nicolai Weisbjerg and Gustav Lang Moesmand
                             """
                         ),
                     ],
@@ -108,7 +115,7 @@ app.layout = html.Div(
                 The data is from Our World in Data from Oxford [[3]] and consists of yearly readings.
                 We see the continental trends, and the average of these, called global.
                 """,
-            className="section__container",
+            className="section__container", id="Introduction",
         ),
         dcc.Graph(figure=intro_plot),
         dcc.Markdown(
@@ -158,7 +165,12 @@ app.layout = html.Div(
                 At the end of the day, what we see is that there is quite large variety between countries when we measure their fraction of renewable energy. 
                 One posssible part of the explanation is differences in social and economic measures between countries. 
                 For the remainder of this article, we will delve deeper into this relationship between energy consumption and social/economic measures.   
+            """,
+                className="section__container",
+            ),
                 
+        dcc.Markdown(
+            """
                 #### **Exploring relationship between energy and social/economic measures**
                 Our hypothesis is that energy consumption is linked with measures of social and enomic aspects at several levels. 
                 Additionally, we hypothesize that the causality of this relationship can be hard to determine, but our guess is that higher social/economic measures eventually will lead to a more green energy profile for a country.
@@ -166,7 +178,7 @@ app.layout = html.Div(
                 In order to investigate this hypothesis, we graph the fraction of renewable energy against a specific social/economic measure, and then let the data flow with time.
                 Each point corresponds to a country. 
             """,
-                className="section__container",
+                className="section__container", id="Exploration",
             ),
              html.Br(),
         html.Div(
@@ -214,9 +226,6 @@ app.layout = html.Div(
             ],
             className="section__container",
         ),
-
-
-
             dcc.Markdown(
              """
                 For most measures, we first and foremost observe that said measure improves over time. 
@@ -224,8 +233,11 @@ app.layout = html.Div(
                 We do, however, not see as significant an improvement in the fraction of renewable energy.
                 We really only do see the trend of higher fraction following higher measure for the green dots, which is Europe. 
                 In order to investigate the relationship in a slightly more robust and precise manner, we can try to model the problem. 
-
-
+            """,
+            className="section__container",
+        ),
+            dcc.Markdown(
+             """
                 #### **Modelling relationship between energy and social/economic measures**
                 In order to model the relationship, we will make use of a model called partial least squares. 
                 In terms of specific variables, we will limit those representing energy to the fraction of reenewable energy, which was also mentioned earlier. 
@@ -244,7 +256,7 @@ app.layout = html.Div(
                 Thus, if we for example see that the first component has a high loading for Oceania, then a "fictional" country that is similar to Oceanic countries will have a high fraction of renewable energy.
                 We can also extract how much a component in its entirety correlates with the response, and we can use this to gauge how well we ultimately model the problem.
             """,
-            className="section__container",
+            className="section__container", id="Modelling" 
         ),
         html.Br(),
         
@@ -307,7 +319,7 @@ app.layout = html.Div(
                 Nuance is very important and it is clear that there is no simple path ahead. 
 
             """,
-            className="section__container",
+            className="section__container", id="Discussion"
         ),
         # --------  -------- #
         # -------- Social data and energy type relationship -------- #
@@ -353,16 +365,19 @@ def display_animated_worldmap(energy_type):
     else:
         color_scale = ["green", "red"]
 
+    energy_type = energy_type + " per capita (kWh)" if energy_type != "Fraction of renewables" else energy_type
+    
     if energy_type == "Fraction of renewables":
         range_color = [0, 1]
     else:
-        [world_df[energy_type].quantile(.05), world_df[energy_type].quantile(0.95)],
+        range_color = [world_df[energy_type].quantile(.05), world_df[energy_type].quantile(0.95)]
 
-    energy_type = energy_type + " per capita (kWh)" if energy_type != "Fraction of renewables" else energy_type
     world_animation_fig = px.choropleth(
         world_df,
         locations="country_code",
         color=energy_type,
+        width=1200,
+        height=800,
         animation_frame="Year",
         hover_name="Entity",
         basemap_visible=True,

@@ -192,31 +192,6 @@ app.layout = html.Div(
                 Thus, if we for example see that the first component has a high loading for Oceania, then a "fictional" country that is similar to Oceanic countries will have a high fraction of renewable energy.
                 We can also extract how much a component in its entirety correlates with the response, and we can use this to gauge how well we ultimately model the problem.
 
-                MOVE THIS: PLS Component 1 
-
-                The correlation coefficient with the target variable is: 0.215. 
-                For the continents, we see that is positively correlates with Europe, while it negatively correlates with Asia. 
-                For the social/economic metrics, we see high positive loadings in measures related do high development, while we have negative correlation for child mortaality and population.
-                It seems like this component captures European countries that are highly developed and puts it in opposition to Asian countries. 
-                An example of such a country could be Iceland. 
-
-                PLS Component 2 
-
-                The correlation coefficient with the target variable is: 0.272.
-                Looking at the continents, we see that this component seems to represent South American countries, putting it in opposition to Asia.
-                For the social/economic measures, we see something interesting. 
-                Despite the component correlating positively with the response, we have negative correlations for many of the measures. 
-                This seems to suggest that the South American can have a relatively high fraction of renewables despite scoring low in the social/economic domain.
-                A good example of this situation is Brazil. 
-
-                PLS Component 3
-
-                The correlation coefficient with the target variable is: 0.213.
-                Here, it looks like the component represents Asian countries that are very populous and are relatively developed, while also somewhat representing Oceania.
-                It also seems like African countries (in particular) in this component show the opposite trend than the Asian ones. 
-                An example of a country that fits this description is China.  
-
-
                 #### **From results to broader perspective**
                 First of all, it is worth noting that the correlation coefficients between the components and the response are quite low. 
                 However, in reality, whether or not a correlation should be deemed low naturally depends on the use-case[[6]]. 
